@@ -1,0 +1,43 @@
+<@box>
+	<@boxHeader title='#i18n{filestoragetransfer.modify_request.title}' />
+	<@boxBody>
+		<@tform class="form-horizontal" method="post" name="modify_request" action="jsp/admin/plugins/filestoragetransfer/ManageRequests.jsp" >
+				<@messages errors=errors />
+				<@input type="hidden" id="id" name="id" value="${request.id}"/>
+				<@input type="hidden" value="${token}" name="token" />
+				
+				<@formGroup labelFor='old_file_key' labelKey='#i18n{filestoragetransfer.modify_request.labelOldFileKey}' mandatory=true>
+					<@input type='text' id='old_file_key' name='old_file_key'  maxlength=255 value='${request.oldFileKey!\'\'}' tabIndex='0' />
+				</@formGroup>
+				<@formGroup labelFor='request_context' labelKey='#i18n{filestoragetransfer.modify_request.labelRequestContext}' mandatory=true>
+					<@input type='text' id='request_context' name='request_context' maxlength=255 value='${request.requestContext!\'\'}' tabIndex='1' />
+				</@formGroup>
+				<@formGroup labelFor='request_context' labelKey='#i18n{filestoragetransfer.modify_request.labelContactMail}' mandatory=true>
+					<@input type='text' id='contact_mail' name='contact_mail' maxlength=255 value='${request.contactMail!\'\'}' tabIndex='2' />
+				</@formGroup>
+				<@formGroup labelFor='source_fileserviceprovider_name' labelKey='#i18n{filestoragetransfer.modify_request.labelSourceFileserviceproviderName}' mandatory=true>
+					<@select name='source_fileserviceprovider_name'>
+						<#list fileservice_list as fileservice>
+							<#if fileservice == request.sourceFileserviceproviderName>
+								<@option value=fileservice label=fileservice selected=true />
+							<#else>
+								<@option value=fileservice label=fileservice />
+							</#if>
+						</#list>
+					</@select>
+				</@formGroup>
+				<@formGroup labelFor='target_fileserviceprovider_name' labelKey='#i18n{filestoragetransfer.modify_request.labelTargetFileserviceproviderName}' mandatory=true>
+					<@select name='target_fileserviceprovider_name'>
+						<#list fileservice_list as fileservice>
+							<#if fileservice == request.targetFileserviceproviderName>
+								<@option value=fileservice label=fileservice selected=true />
+							<#else>
+								<@option value=fileservice label=fileservice />
+							</#if>
+						</#list>
+					</@select>
+				</@formGroup>
+			<@actionButtons button1Name="action_modifyRequest" button2Name="view_manageRequest"/>
+		</@tform>
+	</@boxBody>
+</@box>

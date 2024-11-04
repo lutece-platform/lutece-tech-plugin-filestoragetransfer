@@ -1,0 +1,69 @@
+
+<@box>
+	<@boxHeader title='#i18n{filestoragetransfer.manage_requests.title}' boxTools=true>
+		<@tform class='form-inline pull-right' name='manage_request' action='jsp/admin/plugins/filestoragetransfer/ManageRequests.jsp'>
+            <@div>
+                <@button type='submit' name='view_createRequest' buttonIcon='plus' title='#i18n{filestoragetransfer.manage_requests.buttonAdd}' />
+                <@aButton href='jsp/admin/plugins/filestoragetransfer/ManageRequests.jsp?action=resetStatusOfAllErrorRequests' title='#i18n{filestoragetransfer.manage_requests.buttonResetRequestsStatus}' buttonIcon='refresh' color='btn-danger'  />
+            </@div>
+            <@div>
+                <@select name='request_status_filter'>
+                    <@option value='none' label='#i18n{filestoragetransfer.manage_requests.noStatusFilter}'/>
+                    <#list request_status_list as status>
+                        <#if status.value == selected_request_status_filter.value>
+                            <@option value=status.value label=i18n( status.code ) selected=true/>
+                        <#else>
+                            <@option value=status.value label=i18n( status.code ) />
+                        </#if>
+                    </#list>
+                </@select>
+                <@button type='submit' type='submit' name='action_filterRequest' buttonIcon='filter' title='#i18n{portal.util.labelFilter}' />
+            </@div>
+        </@tform>
+        <@paginationAdmin paginator=paginator combo=1 />
+	</@boxHeader>
+	<@boxBody>    
+    <@messages infos=infos />
+    <div class="clearfix"></div>
+    <@table>
+        <tr>
+            <th>#i18n{filestoragetransfer.manage_requests.columnOldFileKey}</th>
+            <th>#i18n{filestoragetransfer.manage_requests.columnSourceFileserviceproviderName}</th>
+            <th>#i18n{filestoragetransfer.manage_requests.columnTargetFileserviceproviderName}</th>
+            <th>#i18n{filestoragetransfer.manage_requests.columnRequestStatus}</th>
+            <th>#i18n{filestoragetransfer.manage_requests.columnExecutionTime}</th>
+            <th>#i18n{portal.util.labelActions}</th>
+        </tr>
+        <@tableHeadBodySeparator />
+        <#list request_list as request >
+        <tr>
+            <td>
+				${request.oldFileKey}
+			</td>
+            <td>
+				${request.sourceFileserviceproviderName}
+			</td>
+            <td>
+				${request.targetFileserviceproviderName}
+			</td>
+            <td>
+                <@tag color='${request.requestStatus.color}'>${i18n( request.requestStatus.code )}</@tag>
+			</td>
+            <td>
+				${request.executionTime}
+			</td>
+        	<td>
+                <@aButton href='jsp/admin/plugins/filestoragetransfer/ManageRequests.jsp?view=viewRequest&id=${request.id}' title='#i18n{portal.util.labelView}' hideTitle=['all'] buttonIcon='eye' />
+				<@aButton href='jsp/admin/plugins/filestoragetransfer/ManageRequests.jsp?view=modifyRequest&id=${request.id}' title='#i18n{portal.util.labelModify}' hideTitle=['all'] buttonIcon='pencil' />
+
+				<@aButton href='jsp/admin/plugins/filestoragetransfer/ManageRequests.jsp?action=confirmRemoveRequest&id=${request.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] color='btn-danger'  />
+
+	        </td>
+        </tr>
+        </#list>
+    </@table>
+  </@boxBody>
+  <@boxFooter>
+    <@paginationAdmin paginator=paginator />
+  </@boxFooter>
+</@box>

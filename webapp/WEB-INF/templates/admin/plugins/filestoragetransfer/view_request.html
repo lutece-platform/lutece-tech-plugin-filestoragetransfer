@@ -1,0 +1,80 @@
+<@pageContainer>
+	<@pageColumn>
+		<@row>
+			<@columns sm=12 xl=4>
+				<@box>
+					<@boxHeader title='#i18n{filestoragetransfer.view_request.title}' />
+					<@boxBody>
+						<@tform class="form-horizontal" method="get" name="view" >
+								<@messages errors=errors />
+								<@input type="hidden" id="id" name="id" value="${request.id}"/>
+
+								<@formGroup labelFor='old_file_key' rows=2 labelKey='#i18n{filestoragetransfer.modify_request.labelOldFileKey}' mandatory=true>
+									<@input type='text' readonly=true id='old_file_key' name='old_file_key'  maxlength=255 value='${request.oldFileKey!\'\'}' tabIndex='0' />
+								</@formGroup>
+								<@formGroup rows=2 labelFor='source_fileserviceprovider_name' labelKey='#i18n{filestoragetransfer.modify_request.labelSourceFileserviceproviderName}' mandatory=true>
+									<@input type='text' readonly=true id='source_fileserviceprovider_name' name='source_fileserviceprovider_name'  maxlength=255 value='${request.sourceFileserviceproviderName!\'\'}' tabIndex='1' />
+								</@formGroup>
+								<@formGroup rows=2 labelFor='target_fileserviceprovider_name' labelKey='#i18n{filestoragetransfer.modify_request.labelTargetFileserviceproviderName}' mandatory=true>
+									<@input type='text' readonly=true id='target_fileserviceprovider_name' name='target_fileserviceprovider_name' maxlength=255 value='${request.targetFileserviceproviderName!\'\'}' tabIndex='2' />
+								</@formGroup>
+								<@formGroup rows=2 labelFor='request_status' labelKey='#i18n{filestoragetransfer.modify_request.labelRequestStatus}' mandatory=true>
+									<div>
+										<@tag color='${request.requestStatus.color}'>${i18n( request.requestStatus.code )}</@tag>
+									</div>
+								</@formGroup>
+								<@formGroup rows=2 labelFor='request_status' labelKey='#i18n{filestoragetransfer.modify_request.labelRetryCount}' mandatory=true>
+									<@input type='text' readonly=true id='retry_count' name='retry_count' maxlength=255 value='${request.retryCount!\'\'}' tabIndex='4' />
+								</@formGroup>
+								<@formGroup rows=2 labelFor='request_status' labelKey='#i18n{filestoragetransfer.modify_request.labelCreationTime}' mandatory=true>
+									<@input type='text' readonly=true id='creation_time' name='creation_time' maxlength=255 value='${request.creationTime!\'\'}' tabIndex='5' />
+								</@formGroup>
+								<@formGroup rows=2 labelFor='request_status' labelKey='#i18n{filestoragetransfer.modify_request.labelExecutionTime}' mandatory=true>
+									<@input type='text' readonly=true id='execution_time' name='execution_time' maxlength=255 value='${request.executionTime!\'\'}' tabIndex='6' />
+								</@formGroup>
+								<@formGroup rows=2 labelFor='request_context' labelKey='#i18n{filestoragetransfer.modify_request.labelRequestContext}' mandatory=true>
+									<@input type='text' readonly=true id='request_context' name='request_context' maxlength=255 value='${request.requestContext!\'\'}' tabIndex='7' />
+								</@formGroup>
+						</@tform>
+						<div>
+							<@aButton href='jsp/admin/plugins/filestoragetransfer/ManageRequests.jsp?action=resetFileRequestStatus&id=${request.id}' title='#i18n{filestoragetransfer.modify_request.labelResetRequestStatus}' buttonIcon='times' hideTitle=['xs','sm'] />
+							<@aButton href='jsp/admin/plugins/filestoragetransfer/ManageRequests.jsp?action=playFileTransferRequest&id=${request.id}' title='#i18n{filestoragetransfer.modify_request.labelPlayFileTransferRequest}' buttonIcon='play' hideTitle=['xs','sm'] />
+						</div>
+					</@boxBody>
+					<@boxFooter>
+						<@aButton href='jsp/admin/plugins/filestoragetransfer/ManageRequests.jsp' title='#i18n{portal.util.labelPrevious}' buttonIcon='arrow-left'hideTitle=['xs','sm'] color='secondary'  />
+						<@aButton href='jsp/admin/plugins/filestoragetransfer/ManageRequests.jsp?view=modifyRequest&id=${request.id}' hideTitle=['xs','sm'] buttonIcon='edit' title='#i18n{filestoragetransfer.modify_request.labelButton}' hideTitle=['xs','sm'] />
+						<@aButton href='jsp/admin/plugins/filestoragetransfer/ManageRequests.jsp?action=confirmRemoveRequest&id=${request.id}' title='#i18n{portal.util.labelDelete}' buttonIcon='trash' hideTitle=['all'] color='btn-danger' hideTitle=['xs','sm'] />
+					</@boxFooter>
+				</@box>
+			</@columns>
+			<@columns sm=12 xl=8>
+				<@table>
+				<tr>
+					<th>#i18n{filestoragetransfer.manage_errors.columnIdRequest}</th>
+					<th>#i18n{filestoragetransfer.manage_errors.columnErrorCode}</th>
+					<th>#i18n{filestoragetransfer.manage_errors.columnErrorMessage}</th>
+					<th>#i18n{portal.util.labelActions}</th>
+				</tr>
+				<@tableHeadBodySeparator />
+				<#list error_list as error >
+				<tr>
+					<td>
+						${error.idRequest}
+					</td>
+					<td>
+						${error.code}
+					</td>
+					<td>
+						${error.errorMessage}
+					</td>
+					<td>
+						<@aButton href='jsp/admin/plugins/filestoragetransfer/ManageErrors.jsp?view=viewError&id=${error.id}' title='#i18n{portal.util.labelView}' hideTitle=['all'] buttonIcon='eye' />
+					</td>
+				</tr>
+				</#list>
+				</@table>
+			</@columns>
+		</@row>
+	</@pageColumn>
+</@pageContainer>
