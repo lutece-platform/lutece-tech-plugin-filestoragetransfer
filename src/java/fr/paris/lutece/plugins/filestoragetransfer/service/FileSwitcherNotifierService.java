@@ -3,7 +3,7 @@ package fr.paris.lutece.plugins.filestoragetransfer.service;
 import java.util.List;
 
 import fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequest;
-import fr.paris.lutece.plugins.filestoragetransfer.service.listener.FileTransferListener;
+import fr.paris.lutece.plugins.filestoragetransfer.service.listener.IFileTransferListener;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
 import fr.paris.lutece.portal.service.util.AppLogService;
 
@@ -12,16 +12,16 @@ public final class FileSwitcherNotifierService {
     // singleton
     private static FileSwitcherNotifierService _singleton;
 
-    private static List<FileTransferListener> _fileTransferListeners;
+    private static List<IFileTransferListener> _fileTransferListeners;
 
     private FileSwitcherNotifierService ( ) {
 
-        _fileTransferListeners = SpringContextService.getBeansOfType( FileTransferListener.class );
+        _fileTransferListeners = SpringContextService.getBeansOfType( IFileTransferListener.class );
 
         StringBuilder sbLog = new StringBuilder( );
         sbLog.append( "FileTransferListener - loading listeners  : " );
 
-        for ( final FileTransferListener listener : _fileTransferListeners )
+        for ( final IFileTransferListener listener : _fileTransferListeners )
         {
             sbLog.append( "\n\t\t\t\t - " ).append( listener.getName( ) );
         }
