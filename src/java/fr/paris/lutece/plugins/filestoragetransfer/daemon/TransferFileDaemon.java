@@ -63,11 +63,11 @@ public class TransferFileDaemon extends Daemon
             try
             {
                 FileSwitcherService.TransferFileToNewFileService( request );
-                this.setLastRunLogs( "Request " + request.getId() + ": DONE."  );
+                this.appendLastRunLogs( "Request " + request.getId() + ": DONE.\n"  );
             }
             catch( Exception e ) 
             {
-                this.setLastRunLogs( "Request " + request.getId() + " : FAILED ->" + e.getMessage() );
+                this.appendLastRunLogs( "Request " + request.getId() + " : FAILED ->" + e.getMessage() + "\n" );
             }
         });
     }
