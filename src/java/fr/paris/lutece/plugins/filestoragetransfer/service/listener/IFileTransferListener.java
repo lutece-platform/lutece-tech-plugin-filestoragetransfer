@@ -3,7 +3,7 @@ package fr.paris.lutece.plugins.filestoragetransfer.service.listener;
 import fr.paris.lutece.portal.service.util.LuteceService;
 import fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequest;
 
-public interface FileTransferListener extends LuteceService
+public interface IFileTransferListener extends LuteceService
 {
     /**
      * Notify the listener for a file service switch.
