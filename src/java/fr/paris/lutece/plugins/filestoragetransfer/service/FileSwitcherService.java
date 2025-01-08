@@ -139,7 +139,7 @@ public class FileSwitcherService
 
         e.printStackTrace(pw);
 
-        FileRequestError error = new FileRequestError( request.getId(), ResponseCode, e.getMessage().equals(null) ? "" : e.getMessage(), sw.toString(), Timestamp.from( Instant.now( ) ) );
+        FileRequestError error = new FileRequestError( request.getId(), ResponseCode, e.getMessage() == null ? "" : e.getMessage(), sw.toString(), Timestamp.from( Instant.now( ) ) );
         FileRequestErrorHome.create( error );
 
         if(_bNotificationsEnabled) 
