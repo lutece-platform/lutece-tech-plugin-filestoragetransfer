@@ -34,8 +34,8 @@
 
 package fr.paris.lutece.plugins.filestoragetransfer.business;
 
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileRequestError;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileRequestErrorHome;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferError;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferErrorHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
 import java.util.Optional;
@@ -56,33 +56,33 @@ public class ErrorBusinessTest extends LuteceTestCase
     public void testBusiness( )
     {
         // Initialize an object
-        FileRequestError error = new FileRequestError( );
+        FileStorageTransferError error = new FileStorageTransferError( );
         error.setIdRequest( IDREQUEST1 );
         error.setErrorMessage( ERRORMESSAGE1 );
 
         // Create test
-        FileRequestErrorHome.create( error );
-        Optional<FileRequestError> optErrorStored = FileRequestErrorHome.findByPrimaryKey( error.getId( ) );
-        FileRequestError errorStored = optErrorStored.orElse( new FileRequestError( ) );
+        FileStorageTransferErrorHome.create( error );
+        Optional<FileStorageTransferError> optErrorStored = FileStorageTransferErrorHome.findByPrimaryKey( error.getId( ) );
+        FileStorageTransferError errorStored = optErrorStored.orElse( new FileStorageTransferError( ) );
         assertEquals( errorStored.getIdRequest( ), error.getIdRequest( ) );
         assertEquals( errorStored.getErrorMessage( ), error.getErrorMessage( ) );
 
         // Update test
         error.setIdRequest( IDREQUEST2 );
         error.setErrorMessage( ERRORMESSAGE2 );
-        FileRequestErrorHome.update( error );
-        optErrorStored = FileRequestErrorHome.findByPrimaryKey( error.getId( ) );
-        errorStored = optErrorStored.orElse( new FileRequestError( ) );
+        FileStorageTransferErrorHome.update( error );
+        optErrorStored = FileStorageTransferErrorHome.findByPrimaryKey( error.getId( ) );
+        errorStored = optErrorStored.orElse( new FileStorageTransferError( ) );
 
         assertEquals( errorStored.getIdRequest( ), error.getIdRequest( ) );
         assertEquals( errorStored.getErrorMessage( ), error.getErrorMessage( ) );
 
         // List test
-        FileRequestErrorHome.getErrorsList( );
+        FileStorageTransferErrorHome.getErrorsList( );
 
         // Delete test
-        FileRequestErrorHome.remove( error.getId( ) );
-        optErrorStored = FileRequestErrorHome.findByPrimaryKey( error.getId( ) );
+        FileStorageTransferErrorHome.remove( error.getId( ) );
+        optErrorStored = FileStorageTransferErrorHome.findByPrimaryKey( error.getId( ) );
         errorStored = optErrorStored.orElse( null );
         assertNull( errorStored );
 

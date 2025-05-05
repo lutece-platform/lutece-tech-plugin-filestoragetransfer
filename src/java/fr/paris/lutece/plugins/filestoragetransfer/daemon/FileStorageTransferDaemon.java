@@ -33,9 +33,9 @@
  */
 package fr.paris.lutece.plugins.filestoragetransfer.daemon;
 
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequest;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequestHome;
-import fr.paris.lutece.plugins.filestoragetransfer.service.FileSwitcherService;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferRequest;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferRequestHome;
+import fr.paris.lutece.plugins.filestoragetransfer.service.FileStorageTransferService;
 import fr.paris.lutece.portal.service.daemon.Daemon;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
 
@@ -43,32 +43,32 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
 
-public class TransferFileDaemon extends Daemon
+public class FileStorageTransferDaemon extends Daemon
 {
 
     private static int _nBatchSize;
 
-    public TransferFileDaemon(  )
+    public FileStorageTransferDaemon( )
     {
         _nBatchSize = AppPropertiesService.getPropertyInt( "filestoragetransfer.UploadLimit", 0 );
     }
 
     public void run( )
     {
-        Timestamp executionTime = Timestamp.from(Instant.now());
+        Timestamp executionTime = Timestamp.from( Instant.now( ) );
 
-        List<FileTransferRequest> listRequest = FileTransferRequestHome.selectRequestsListByStatusAndExecutionTime (  executionTime, _nBatchSize );
-        
+        List<FileStorageTransferRequest> listRequest = FileStorageTransferRequestHome.selectRequestsListByStatusAndExecutionTime( executionTime, _nBatchSize );
+
         listRequest.forEach( request -> {
             try
             {
-                FileSwitcherService.TransferFileToNewFileService( request );
-                this.appendLastRunLogs( "Request " + request.getId() + ": DONE.\n"  );
+                FileStorageTransferService.TransferFileToTargetFileService( request );
+                this.appendLastRunLogs( "Request " + request.getId( ) + ": DONE.\n" );
             }
-            catch( Exception e ) 
+            catch( Exception e )
             {
-                this.appendLastRunLogs( "Request " + request.getId() + " : FAILED ->" + e.getMessage() + "\n" );
+                this.appendLastRunLogs( "Request " + request.getId( ) + " : FAILED ->" + e.getMessage( ) + "\n" );
             }
-        });
+        } );
     }
 }

@@ -37,11 +37,11 @@ package fr.paris.lutece.plugins.filestoragetransfer.web;
 import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.security.SecurityTokenService;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileRequestError;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileRequestErrorHome;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequest;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequestHome;
-import fr.paris.lutece.plugins.filestoragetransfer.daemon.TransferFileDaemon;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferError;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferErrorHome;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferRequest;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferRequestHome;
+import fr.paris.lutece.plugins.filestoragetransfer.daemon.FileStorageTransferDaemon;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.util.AppException;
 import fr.paris.lutece.portal.service.util.AppPropertiesService;
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * This class provides the user interface to manage Error features ( manage, create, modify, remove )
  */
 @Controller( controllerJsp = "ManageErrors.jsp", controllerPath = "jsp/admin/plugins/filestoragetransfer/", right = "FILESTORAGETRANSFER_ERROR_MANAGEMENT" )
-public class ErrorJspBean extends AbstractPaginatorJspBean<Integer, FileRequestError>
+public class FileStorageTransferErrorJspBean extends AbstractPaginatorJspBean<Integer, FileStorageTransferError>
 {
 
     // Rights
@@ -97,9 +97,9 @@ public class ErrorJspBean extends AbstractPaginatorJspBean<Integer, FileRequestE
     private static final String ERROR_RESOURCE_NOT_FOUND = "Resource not found";
 
     // Session variable to store working values
-    private FileRequestError _error;
+    private FileStorageTransferError _error;
     private List<Integer> _listIdErrors;
-    
+
     /**
      * Build the Manage View
      * 
@@ -114,7 +114,7 @@ public class ErrorJspBean extends AbstractPaginatorJspBean<Integer, FileRequestE
 
         if ( request.getParameter( AbstractPaginator.PARAMETER_PAGE_INDEX ) == null || _listIdErrors.isEmpty( ) )
         {
-            _listIdErrors = FileRequestErrorHome.getIdErrorsList( );
+            _listIdErrors = FileStorageTransferErrorHome.getIdErrorsList( );
         }
 
         Map<String, Object> model = getPaginatedListModel( request, MARK_ERROR_LIST, _listIdErrors, JSP_MANAGE_ERRORS );
@@ -129,9 +129,9 @@ public class ErrorJspBean extends AbstractPaginatorJspBean<Integer, FileRequestE
      * @return the populated list of items corresponding to the id List
      */
     @Override
-    List<FileRequestError> getItemsFromIds( List<Integer> listIds )
+    List<FileStorageTransferError> getItemsFromIds( List<Integer> listIds )
     {
-        List<FileRequestError> listError = FileRequestErrorHome.getErrorsListByIds( listIds );
+        List<FileStorageTransferError> listError = FileStorageTransferErrorHome.getErrorsListByIds( listIds );
 
         // keep original order
         return listError.stream( ).sorted( Comparator.comparingInt( notif -> listIds.indexOf( notif.getId( ) ) ) ).collect( Collectors.toList( ) );
@@ -165,7 +165,7 @@ public class ErrorJspBean extends AbstractPaginatorJspBean<Integer, FileRequestE
 
         if ( _error == null || ( _error.getId( ) != nId ) )
         {
-            Optional<FileRequestError> optError = FileRequestErrorHome.findByPrimaryKey( nId );
+            Optional<FileStorageTransferError> optError = FileStorageTransferErrorHome.findByPrimaryKey( nId );
             _error = optError.orElseThrow( ( ) -> new AppException( ERROR_RESOURCE_NOT_FOUND ) );
         }
 
@@ -184,11 +184,11 @@ public class ErrorJspBean extends AbstractPaginatorJspBean<Integer, FileRequestE
             throw new AccessDeniedException( "Invalid security token" );
         }
 
-        FileTransferRequest requestToReplay = FileTransferRequestHome.findByPrimaryKey( _error.getIdRequest( ) ).get( );
+        FileStorageTransferRequest requestToReplay = FileStorageTransferRequestHome.findByPrimaryKey( _error.getIdRequest( ) ).get( );
 
         Map<String, Object> model = getModel( );
         model.put( MARK_ERROR, _error );
-        
+
         return redirectView( request, VIEW_ERROR );
     }
 }

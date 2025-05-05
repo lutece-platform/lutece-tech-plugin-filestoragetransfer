@@ -46,7 +46,7 @@ import java.util.Optional;
 /**
  * This class provides Data Access methods for Request objects
  */
-public final class FileTransferRequestDAO implements IFileTransferRequestDAO
+public final class FileStorageTransferRequestDAO implements IFileStorageTransferRequestDAO
 {
     // Constants
     private static final String SQL_QUERY_INSERT = "INSERT INTO filestoragetransfer_request ( old_file_key, source_fileserviceprovider_name, new_file_key, target_fileserviceprovider_name, request_status, retry_count ,execution_time, creation_time, request_context, contact_mail ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ";
@@ -62,23 +62,23 @@ public final class FileTransferRequestDAO implements IFileTransferRequestDAO
     private static final String SQL_QUERY_SELECT_BY_STATUS = SQL_QUERY_SELECTALL + " WHERE request_status = ?";
     private static final String SQL_QUERY_SELECTALL_ID_BY_STATUS = SQL_QUERY_SELECTALL_ID + " WHERE request_status = ?";
 
-    private static final String SQL_FILTER_SELECT_TIMESTAMP_BEFORE= " AND execution_time < ?";
+    private static final String SQL_FILTER_SELECT_TIMESTAMP_BEFORE = " AND execution_time < ?";
     private static final String SQL_FILTER_ORDER_BY_TIMESTAMP = " ORDER BY execution_time ASC";
 
     /**
      * {@inheritDoc }
      */
     @Override
-    public void insert( FileTransferRequest request, Plugin plugin )
+    public void insert( FileStorageTransferRequest request, Plugin plugin )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, Statement.RETURN_GENERATED_KEYS, plugin ) )
         {
             int nIndex = 1;
-            daoUtil.setString( nIndex++, request.getOldFileKey( ) );
+            daoUtil.setString( nIndex++, request.getSourceFileKey( ) );
             daoUtil.setString( nIndex++, request.getSourceFileserviceproviderName( ) );
-            daoUtil.setString( nIndex++, request.getNewFileKey( ) );
+            daoUtil.setString( nIndex++, request.getTargetFileKey( ) );
             daoUtil.setString( nIndex++, request.getTargetFileserviceproviderName( ) );
-            daoUtil.setString( nIndex++, request.getRequestStatus( ).getValue() );
+            daoUtil.setString( nIndex++, request.getRequestStatus( ).getValue( ) );
             daoUtil.setInt( nIndex++, request.getRetryCount( ) );
             daoUtil.setTimestamp( nIndex++, request.getExecutionTime( ) );
             daoUtil.setTimestamp( nIndex++, request.getCreationTime( ) );
@@ -98,13 +98,13 @@ public final class FileTransferRequestDAO implements IFileTransferRequestDAO
      * {@inheritDoc }
      */
     @Override
-    public Optional<FileTransferRequest> load( int nKey, Plugin plugin )
+    public Optional<FileStorageTransferRequest> load( int nKey, Plugin plugin )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID, plugin ) )
         {
             daoUtil.setInt( 1, nKey );
             daoUtil.executeQuery( );
-            FileTransferRequest request = null;
+            FileStorageTransferRequest request = null;
 
             if ( daoUtil.next( ) )
             {
@@ -132,17 +132,17 @@ public final class FileTransferRequestDAO implements IFileTransferRequestDAO
      * {@inheritDoc }
      */
     @Override
-    public void store( FileTransferRequest request, Plugin plugin )
+    public void store( FileStorageTransferRequest request, Plugin plugin )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
         {
             int nIndex = 1;
 
-            daoUtil.setString( nIndex++, request.getOldFileKey( ) );
+            daoUtil.setString( nIndex++, request.getSourceFileKey( ) );
             daoUtil.setString( nIndex++, request.getSourceFileserviceproviderName( ) );
-            daoUtil.setString( nIndex++, request.getNewFileKey( ) );
+            daoUtil.setString( nIndex++, request.getTargetFileKey( ) );
             daoUtil.setString( nIndex++, request.getTargetFileserviceproviderName( ) );
-            daoUtil.setString( nIndex++, request.getRequestStatus( ).getValue() );
+            daoUtil.setString( nIndex++, request.getRequestStatus( ).getValue( ) );
             daoUtil.setInt( nIndex++, request.getRetryCount( ) );
             daoUtil.setTimestamp( nIndex++, request.getExecutionTime( ) );
             daoUtil.setTimestamp( nIndex++, request.getCreationTime( ) );
@@ -158,9 +158,9 @@ public final class FileTransferRequestDAO implements IFileTransferRequestDAO
      * {@inheritDoc }
      */
     @Override
-    public List<FileTransferRequest> selectRequestsList( Plugin plugin )
+    public List<FileStorageTransferRequest> selectRequestsList( Plugin plugin )
     {
-        List<FileTransferRequest> requestList = new ArrayList<>( );
+        List<FileStorageTransferRequest> requestList = new ArrayList<>( );
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin ) )
         {
             daoUtil.executeQuery( );
@@ -218,9 +218,9 @@ public final class FileTransferRequestDAO implements IFileTransferRequestDAO
      * {@inheritDoc }
      */
     @Override
-    public List<FileTransferRequest> selectRequestsListByIds( Plugin plugin, List<Integer> listIds )
+    public List<FileStorageTransferRequest> selectRequestsListByIds( Plugin plugin, List<Integer> listIds )
     {
-        List<FileTransferRequest> requestList = new ArrayList<>( );
+        List<FileStorageTransferRequest> requestList = new ArrayList<>( );
 
         StringBuilder builder = new StringBuilder( );
 
@@ -256,16 +256,16 @@ public final class FileTransferRequestDAO implements IFileTransferRequestDAO
 
     }
 
-        /**
+    /**
      * {@inheritDoc }
      */
     @Override
-    public List<Integer> selectIdRequestsListByStatus(Plugin _plugin, String RequestStatus)
+    public List<Integer> selectIdRequestsListByStatus( Plugin _plugin, String RequestStatus )
     {
         List<Integer> requestList = new ArrayList<>( );
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL_ID_BY_STATUS, _plugin ) )
         {
-            daoUtil.setString(1, RequestStatus);
+            daoUtil.setString( 1, RequestStatus );
             daoUtil.executeQuery( );
 
             while ( daoUtil.next( ) )
@@ -277,14 +277,13 @@ public final class FileTransferRequestDAO implements IFileTransferRequestDAO
         }
     }
 
-
     /**
      * {@inheritDoc }
      */
     @Override
-    public List<FileTransferRequest> selectRequestsListByStatus( Plugin plugin, String RequestStatus )
+    public List<FileStorageTransferRequest> selectRequestsListByStatus( Plugin plugin, String RequestStatus )
     {
-        List<FileTransferRequest> requestList = new ArrayList<>( );
+        List<FileStorageTransferRequest> requestList = new ArrayList<>( );
 
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_STATUS, plugin ) )
         {
@@ -306,31 +305,33 @@ public final class FileTransferRequestDAO implements IFileTransferRequestDAO
      * {@inheritDoc }
      */
     @Override
-    public List<FileTransferRequest> selectRequestsListToExecute( Plugin plugin, Timestamp executionTime, int limit )
+    public List<FileStorageTransferRequest> selectRequestsListToExecute( Plugin plugin, Timestamp executionTime, int limit )
     {
-        List<FileTransferRequest> requestList = new ArrayList<>( );
+        List<FileStorageTransferRequest> requestList = new ArrayList<>( );
 
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_STATUS + SQL_FILTER_SELECT_TIMESTAMP_BEFORE + SQL_FILTER_ORDER_BY_TIMESTAMP, plugin ) )
         {
-            daoUtil.setString( 1, RequestStatus.STATUS_FAILED.getValue() );
+            daoUtil.setString( 1, FileStorageTransferRequestStatus.STATUS_FAILED.getValue( ) );
             daoUtil.setTimestamp( 2, executionTime );
             daoUtil.executeQuery( );
 
-            while ( daoUtil.next( ))
+            while ( daoUtil.next( ) )
             {
                 requestList.add( loadFromDaoUtil( daoUtil ) );
-                if(requestList.size() <= limit && limit > 0) {
+                if ( requestList.size( ) <= limit && limit > 0 )
+                {
                     break;
                 }
             }
-            
-            daoUtil.setString( 1, RequestStatus.STATUS_TODO.getValue() );
+
+            daoUtil.setString( 1, FileStorageTransferRequestStatus.STATUS_TODO.getValue( ) );
             daoUtil.executeQuery( );
 
-            while ( daoUtil.next( ))
+            while ( daoUtil.next( ) )
             {
                 requestList.add( loadFromDaoUtil( daoUtil ) );
-                if(requestList.size() <= limit && limit > 0) {
+                if ( requestList.size( ) <= limit && limit > 0 )
+                {
                     break;
                 }
             }
@@ -340,11 +341,11 @@ public final class FileTransferRequestDAO implements IFileTransferRequestDAO
         }
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_STATUS + SQL_FILTER_SELECT_TIMESTAMP_BEFORE + SQL_FILTER_ORDER_BY_TIMESTAMP, plugin ) )
         {
-            daoUtil.setString( 1, RequestStatus.STATUS_TODO.getValue() );
+            daoUtil.setString( 1, FileStorageTransferRequestStatus.STATUS_TODO.getValue( ) );
             daoUtil.setTimestamp( 2, executionTime );
             daoUtil.executeQuery( );
 
-            while ( daoUtil.next( ) && requestList.size() <= limit && limit > 0)
+            while ( daoUtil.next( ) && requestList.size( ) <= limit && limit > 0 )
             {
                 requestList.add( loadFromDaoUtil( daoUtil ) );
             }
@@ -356,18 +357,18 @@ public final class FileTransferRequestDAO implements IFileTransferRequestDAO
 
     }
 
-    private FileTransferRequest loadFromDaoUtil( DAOUtil daoUtil )
+    private FileStorageTransferRequest loadFromDaoUtil( DAOUtil daoUtil )
     {
 
-        FileTransferRequest request = new FileTransferRequest( );
+        FileStorageTransferRequest request = new FileStorageTransferRequest( );
         int nIndex = 1;
 
         request.setId( daoUtil.getInt( nIndex++ ) );
-        request.setOldFileKey( daoUtil.getString( nIndex++ ) );
+        request.setSourceFileKey( daoUtil.getString( nIndex++ ) );
         request.setSourceFileserviceproviderName( daoUtil.getString( nIndex++ ) );
-        request.setNewFileKey( daoUtil.getString( nIndex++ ) );
+        request.setTargetFileKey( daoUtil.getString( nIndex++ ) );
         request.setTargetFileserviceproviderName( daoUtil.getString( nIndex++ ) );
-        request.setRequestStatus( RequestStatus.getRequestStatusByValue( daoUtil.getString( nIndex++ ) )  );
+        request.setRequestStatus( FileStorageTransferRequestStatus.getRequestStatusByValue( daoUtil.getString( nIndex++ ) ) );
         request.setRetryCount( daoUtil.getInt( nIndex++ ) );
         request.setExecutionTime( daoUtil.getTimestamp( nIndex++ ) );
         request.setCreationTime( daoUtil.getTimestamp( nIndex++ ) );

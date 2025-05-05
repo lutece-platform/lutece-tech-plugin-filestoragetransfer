@@ -34,8 +34,8 @@
 
 package fr.paris.lutece.plugins.filestoragetransfer.business;
 
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequest;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequestHome;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferRequest;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferRequestHome;
 import fr.paris.lutece.test.LuteceTestCase;
 
 import java.util.Optional;
@@ -47,8 +47,8 @@ import org.bouncycastle.cert.ocsp.Req;
  */
 public class RequestBusinessTest extends LuteceTestCase
 {
-    private static final String OLDFILEKEY1 = "OldFileKey1";
-    private static final String OLDFILEKEY2 = "OldFileKey2";
+    private static final String SOURCEFILEKEY1 = "SourceFileKey1";
+    private static final String SOURCEFILEKEY2 = "SourceFileKey2";
     private static final String SOURCEFILESERVICEPROVIDERNAME1 = "SourceFileserviceproviderName1";
     private static final String SOURCEFILESERVICEPROVIDERNAME2 = "SourceFileserviceproviderName2";
     private static final String TARGETFILESERVICEPROVIDERNAME1 = "TargetFileserviceproviderName1";
@@ -60,41 +60,41 @@ public class RequestBusinessTest extends LuteceTestCase
     public void testBusiness( )
     {
         // Initialize an object
-        FileTransferRequest request = new FileTransferRequest( );
-        request.setOldFileKey( OLDFILEKEY1 );
+        FileStorageTransferRequest request = new FileStorageTransferRequest( );
+        request.setSourceFileKey( SOURCEFILEKEY1 );
         request.setSourceFileserviceproviderName( SOURCEFILESERVICEPROVIDERNAME1 );
         request.setTargetFileserviceproviderName( TARGETFILESERVICEPROVIDERNAME1 );
-        request.setRequestStatus( RequestStatus.STATUS_TODO );
+        request.setRequestStatus( FileStorageTransferRequestStatus.STATUS_TODO );
 
         // Create test
-        FileTransferRequestHome.create( request );
-        Optional<FileTransferRequest> optRequestStored = FileTransferRequestHome.findByPrimaryKey( request.getId( ) );
-        FileTransferRequest requestStored = optRequestStored.orElse( new FileTransferRequest( ) );
-        assertEquals( requestStored.getOldFileKey( ), request.getOldFileKey( ) );
+        FileStorageTransferRequestHome.create( request );
+        Optional<FileStorageTransferRequest> optRequestStored = FileStorageTransferRequestHome.findByPrimaryKey( request.getId( ) );
+        FileStorageTransferRequest requestStored = optRequestStored.orElse( new FileStorageTransferRequest( ) );
+        assertEquals( requestStored.getSourceFileKey( ), request.getSourceFileKey( ) );
         assertEquals( requestStored.getSourceFileserviceproviderName( ), request.getSourceFileserviceproviderName( ) );
         assertEquals( requestStored.getTargetFileserviceproviderName( ), request.getTargetFileserviceproviderName( ) );
         assertEquals( requestStored.getRequestStatus( ), request.getRequestStatus( ) );
 
         // Update test
-        request.setOldFileKey( OLDFILEKEY2 );
+        request.setSourceFileKey( SOURCEFILEKEY2 );
         request.setSourceFileserviceproviderName( SOURCEFILESERVICEPROVIDERNAME2 );
         request.setTargetFileserviceproviderName( TARGETFILESERVICEPROVIDERNAME2 );
-        request.setRequestStatus( RequestStatus.STATUS_DONE );
-        FileTransferRequestHome.update( request );
-        optRequestStored = FileTransferRequestHome.findByPrimaryKey( request.getId( ) );
-        requestStored = optRequestStored.orElse( new FileTransferRequest( ) );
+        request.setRequestStatus( FileStorageTransferRequestStatus.STATUS_DONE );
+        FileStorageTransferRequestHome.update( request );
+        optRequestStored = FileStorageTransferRequestHome.findByPrimaryKey( request.getId( ) );
+        requestStored = optRequestStored.orElse( new FileStorageTransferRequest( ) );
 
-        assertEquals( requestStored.getOldFileKey( ), request.getOldFileKey( ) );
+        assertEquals( requestStored.getSourceFileKey( ), request.getSourceFileKey( ) );
         assertEquals( requestStored.getSourceFileserviceproviderName( ), request.getSourceFileserviceproviderName( ) );
         assertEquals( requestStored.getTargetFileserviceproviderName( ), request.getTargetFileserviceproviderName( ) );
         assertEquals( requestStored.getRequestStatus( ), request.getRequestStatus( ) );
 
         // List test
-        FileTransferRequestHome.getRequestsList( );
+        FileStorageTransferRequestHome.getRequestsList( );
 
         // Delete test
-        FileTransferRequestHome.remove( request.getId( ) );
-        optRequestStored = FileTransferRequestHome.findByPrimaryKey( request.getId( ) );
+        FileStorageTransferRequestHome.remove( request.getId( ) );
+        optRequestStored = FileStorageTransferRequestHome.findByPrimaryKey( request.getId( ) );
         requestStored = optRequestStored.orElse( null );
         assertNull( requestStored );
 

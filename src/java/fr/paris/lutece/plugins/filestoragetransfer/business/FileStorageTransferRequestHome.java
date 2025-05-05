@@ -46,16 +46,16 @@ import java.util.Optional;
 /**
  * This class provides instances management methods (create, find, ...) for Request objects
  */
-public final class FileTransferRequestHome
+public final class FileStorageTransferRequestHome
 {
     // Static variable pointed at the DAO instance
-    private static IFileTransferRequestDAO _dao = SpringContextService.getBean( "filestoragetransfer.requestDAO" );
+    private static IFileStorageTransferRequestDAO _dao = SpringContextService.getBean( "filestoragetransfer.requestDAO" );
     private static Plugin _plugin = PluginService.getPlugin( "filestoragetransfer" );
 
     /**
      * Private constructor - this class need not be instantiated
      */
-    private FileTransferRequestHome( )
+    private FileStorageTransferRequestHome( )
     {
     }
 
@@ -66,7 +66,7 @@ public final class FileTransferRequestHome
      *            The instance of the Request which contains the informations to store
      * @return The instance of request which has been created with its primary key.
      */
-    public static FileTransferRequest create( FileTransferRequest request )
+    public static FileStorageTransferRequest create( FileStorageTransferRequest request )
     {
         _dao.insert( request, _plugin );
 
@@ -80,7 +80,7 @@ public final class FileTransferRequestHome
      *            The instance of the Request which contains the data to store
      * @return The instance of the request which has been updated
      */
-    public static FileTransferRequest update( FileTransferRequest request )
+    public static FileStorageTransferRequest update( FileStorageTransferRequest request )
     {
         _dao.store( request, _plugin );
 
@@ -105,7 +105,7 @@ public final class FileTransferRequestHome
      *            The request primary key
      * @return an instance of Request
      */
-    public static Optional<FileTransferRequest> findByPrimaryKey( int nKey )
+    public static Optional<FileStorageTransferRequest> findByPrimaryKey( int nKey )
     {
         return _dao.load( nKey, _plugin );
     }
@@ -115,7 +115,7 @@ public final class FileTransferRequestHome
      * 
      * @return the list which contains the data of all the request objects
      */
-    public static List<FileTransferRequest> getRequestsList( )
+    public static List<FileStorageTransferRequest> getRequestsList( )
     {
         return _dao.selectRequestsList( _plugin );
     }
@@ -135,12 +135,10 @@ public final class FileTransferRequestHome
      * 
      * @return the list which contains the id of all the request objects
      */
-    public static List<Integer> getIdRequestsListByStatus( String status)
+    public static List<Integer> getIdRequestsListByStatus( String status )
     {
         return _dao.selectIdRequestsListByStatus( _plugin, status );
     }
-
-    
 
     /**
      * Load the data of all the request objects and returns them as a referenceList
@@ -159,7 +157,7 @@ public final class FileTransferRequestHome
      *            liste of ids
      * @return the list which contains the data of all the avant objects
      */
-    public static List<FileTransferRequest> getRequestsListByIds( List<Integer> listIds )
+    public static List<FileStorageTransferRequest> getRequestsListByIds( List<Integer> listIds )
     {
         return _dao.selectRequestsListByIds( _plugin, listIds );
     }
@@ -173,7 +171,7 @@ public final class FileTransferRequestHome
      *            Status of the request
      * @return The list which contains the data of all the avant objects
      */
-    public static List<FileTransferRequest> getRequestsListByStatus( String status )
+    public static List<FileStorageTransferRequest> getRequestsListByStatus( String status )
     {
         return _dao.selectRequestsListByStatus( _plugin, status );
     }
@@ -187,7 +185,8 @@ public final class FileTransferRequestHome
      *            Status of the request
      * @return The list which contains the data of all the avant objects
      */
-    public static List<FileTransferRequest> selectRequestsListByStatusAndExecutionTime( Timestamp executionTime, int limit ) {
+    public static List<FileStorageTransferRequest> selectRequestsListByStatusAndExecutionTime( Timestamp executionTime, int limit )
+    {
         return _dao.selectRequestsListToExecute( _plugin, executionTime, limit );
     }
 

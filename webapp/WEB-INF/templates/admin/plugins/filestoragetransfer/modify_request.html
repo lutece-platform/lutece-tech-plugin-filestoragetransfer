@@ -6,8 +6,8 @@
 				<@input type="hidden" id="id" name="id" value="${request.id}"/>
 				<@input type="hidden" value="${token}" name="token" />
 				
-				<@formGroup labelFor='old_file_key' labelKey='#i18n{filestoragetransfer.modify_request.labelOldFileKey}' mandatory=true>
-					<@input type='text' id='old_file_key' name='old_file_key'  maxlength=255 value='${request.oldFileKey!\'\'}' tabIndex='0' />
+				<@formGroup labelFor='old_file_key' labelKey='#i18n{filestoragetransfer.modify_request.labelSourceFileKey}' mandatory=true>
+					<@input type='text' id='old_file_key' name='old_file_key'  maxlength=255 value='${request.sourceFileKey!\'\'}' tabIndex='0' />
 				</@formGroup>
 				<@formGroup labelFor='request_context' labelKey='#i18n{filestoragetransfer.modify_request.labelRequestContext}' mandatory=true>
 					<@input type='text' id='request_context' name='request_context' maxlength=255 value='${request.requestContext!\'\'}' tabIndex='1' />

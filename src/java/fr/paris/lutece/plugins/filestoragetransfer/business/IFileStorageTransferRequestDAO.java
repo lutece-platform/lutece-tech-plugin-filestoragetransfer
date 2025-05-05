@@ -36,39 +36,41 @@ package fr.paris.lutece.plugins.filestoragetransfer.business;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.util.ReferenceList;
+
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * IErrorDAO Interface
+ * IRequestDAO Interface
  */
-public interface IFileRequestErrorDAO
+public interface IFileStorageTransferRequestDAO
 {
     /**
      * Insert a new record in the table.
      * 
-     * @param error
-     *            instance of the Error object to insert
+     * @param request
+     *            instance of the Request object to insert
      * @param plugin
      *            the Plugin
      */
-    void insert( FileRequestError error, Plugin plugin );
+    void insert( FileStorageTransferRequest request, Plugin plugin );
 
     /**
      * Update the record in the table
      * 
-     * @param error
-     *            the reference of the Error
+     * @param request
+     *            the reference of the Request
      * @param plugin
      *            the Plugin
      */
-    void store( FileRequestError error, Plugin plugin );
+    void store( FileStorageTransferRequest request, Plugin plugin );
 
     /**
      * Delete a record from the table
      * 
      * @param nKey
-     *            The identifier of the Error to delete
+     *            The identifier of the Request to delete
      * @param plugin
      *            the Plugin
      */
@@ -81,39 +83,39 @@ public interface IFileRequestErrorDAO
      * Load the data from the table
      * 
      * @param nKey
-     *            The identifier of the error
+     *            The identifier of the request
      * @param plugin
      *            the Plugin
-     * @return The instance of the error
+     * @return The instance of the request
      */
-    Optional<FileRequestError> load( int nKey, Plugin plugin );
+    Optional<FileStorageTransferRequest> load( int nKey, Plugin plugin );
 
     /**
-     * Load the data of all the error objects and returns them as a list
+     * Load the data of all the request objects and returns them as a list
      * 
      * @param plugin
      *            the Plugin
-     * @return The list which contains the data of all the error objects
+     * @return The list which contains the data of all the request objects
      */
-    List<FileRequestError> selectErrorsList( Plugin plugin );
+    List<FileStorageTransferRequest> selectRequestsList( Plugin plugin );
 
     /**
-     * Load the id of all the error objects and returns them as a list
+     * Load the id of all the request objects and returns them as a list
      * 
      * @param plugin
      *            the Plugin
-     * @return The list which contains the id of all the error objects
+     * @return The list which contains the id of all the request objects
      */
-    List<Integer> selectIdErrorsList( Plugin plugin );
+    List<Integer> selectIdRequestsList( Plugin plugin );
 
     /**
-     * Load the data of all the error objects and returns them as a referenceList
+     * Load the data of all the request objects and returns them as a referenceList
      * 
      * @param plugin
      *            the Plugin
-     * @return The referenceList which contains the data of all the error objects
+     * @return The referenceList which contains the data of all the request objects
      */
-    ReferenceList selectErrorsReferenceList( Plugin plugin );
+    ReferenceList selectRequestsReferenceList( Plugin plugin );
 
     /**
      * Load the data of all the avant objects and returns them as a list
@@ -124,14 +126,36 @@ public interface IFileRequestErrorDAO
      *            liste of ids
      * @return The list which contains the data of all the avant objects
      */
-    List<FileRequestError> selectErrorsListByIds( Plugin _plugin, List<Integer> listIds );
+    List<FileStorageTransferRequest> selectRequestsListByIds( Plugin _plugin, List<Integer> listIds );
 
     /**
-     * Load the data of all the error objects and returns them as a list
+     * Load the data of all the avant objects and returns them as a list
      * 
      * @param plugin
      *            the Plugin
-     * @return The list which contains the data of all the error objects
+     * @param RequestStatus
+     *            Status of the request
+     * @return The list which contains the data of all the avant objects
      */
-    List<FileRequestError> selectErrorsListByRequestId( Plugin plugin, int RequestId );
+    List<FileStorageTransferRequest> selectRequestsListByStatus( Plugin plugin, String RequestStatus );
+
+    /**
+     * Load the data of all the avant objects and returns them as a list
+     * 
+     * @param plugin
+     *            the Plugin
+     * @param RequestStatus
+     *            Status of the request
+     * @return The list which contains the data of all the avant objects
+     */
+    List<FileStorageTransferRequest> selectRequestsListToExecute( Plugin plugin, Timestamp executionTime, int limit );
+
+    /**
+     * Load the id of all the request objects with a specific status and returns them as a list
+     * 
+     * @param plugin
+     *            the Plugin
+     * @return The list which contains the id of all the request objects
+     */
+    List<Integer> selectIdRequestsListByStatus( Plugin _plugin, String RequestStatus );
 }
