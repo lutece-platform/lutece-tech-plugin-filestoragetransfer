@@ -11,7 +11,7 @@
     <provider>filestoragetransfer.plugin.provider</provider>
     <provider-url>https://lutece.paris.fr/</provider-url>
     <icon-url>images/admin/skin/feature_default_icon.png</icon-url>
-    <copyright>Copyright © 2024 City of Paris</copyright>
+    <copyright>Copyright © 2025 City of Paris</copyright>
     <db-pool-required>1</db-pool-required>
     
     <core-version-dependency>

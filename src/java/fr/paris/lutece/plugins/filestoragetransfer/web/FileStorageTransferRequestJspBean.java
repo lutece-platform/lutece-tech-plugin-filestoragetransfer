@@ -38,12 +38,12 @@ import fr.paris.lutece.portal.service.message.AdminMessage;
 import fr.paris.lutece.portal.service.message.AdminMessageService;
 import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.portal.service.spring.SpringContextService;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileRequestError;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileRequestErrorHome;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequest;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequestHome;
-import fr.paris.lutece.plugins.filestoragetransfer.business.RequestStatus;
-import fr.paris.lutece.plugins.filestoragetransfer.service.FileSwitcherService;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferError;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferErrorHome;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferRequest;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferRequestHome;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferRequestStatus;
+import fr.paris.lutece.plugins.filestoragetransfer.service.FileStorageTransferService;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.file.IFileStoreServiceProvider;
 import fr.paris.lutece.portal.service.i18n.I18nService;
@@ -66,12 +66,11 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
-
 /**
  * This class provides the user interface to manage Request features ( manage, create, modify, remove )
  */
 @Controller( controllerJsp = "ManageRequests.jsp", controllerPath = "jsp/admin/plugins/filestoragetransfer/", right = "FILESTORAGETRANSFER_REQUEST_MANAGEMENT" )
-public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransferRequest>
+public class FileStorageTransferRequestJspBean extends AbstractPaginatorJspBean<Integer, FileStorageTransferRequest>
 {
 
     // Rights
@@ -137,9 +136,9 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
     private static final String ERROR_RESOURCE_NOT_FOUND = "Resource not found";
 
     // Session variable to store working values
-    private FileTransferRequest _fileTransferRequest;
+    private FileStorageTransferRequest _fileTransferRequest;
     private List<Integer> _listIdFileTransferRequests;
-    private RequestStatus _statusFilter = RequestStatus.STATUS_UNKNOWN;
+    private FileStorageTransferRequestStatus _statusFilter = FileStorageTransferRequestStatus.STATUS_UNKNOWN;
 
     /**
      * Build the Manage View
@@ -153,22 +152,23 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
     {
         _fileTransferRequest = null;
 
-        List<RequestStatus> requestStatusList = RequestStatus.getAllStatus();
+        List<FileStorageTransferRequestStatus> requestStatusList = FileStorageTransferRequestStatus.getAllStatus( );
 
         if ( request.getParameter( AbstractPaginator.PARAMETER_PAGE_INDEX ) == null || _listIdFileTransferRequests.isEmpty( ) )
         {
-            if ( !_statusFilter.equals( RequestStatus.STATUS_UNKNOWN ) )
+            if ( !_statusFilter.equals( FileStorageTransferRequestStatus.STATUS_UNKNOWN ) )
             {
-                _listIdFileTransferRequests = FileTransferRequestHome.getIdRequestsListByStatus( _statusFilter.getValue() );
+                _listIdFileTransferRequests = FileStorageTransferRequestHome.getIdRequestsListByStatus( _statusFilter.getValue( ) );
             }
-            else {
-                _listIdFileTransferRequests = FileTransferRequestHome.getIdRequestsList( );
+            else
+            {
+                _listIdFileTransferRequests = FileStorageTransferRequestHome.getIdRequestsList( );
             }
         }
 
         Map<String, Object> model = getPaginatedListModel( request, MARK_REQUEST_LIST, _listIdFileTransferRequests, JSP_MANAGE_REQUESTS );
         model.put( MARK_REQUEST_STATUS_LIST, requestStatusList );
-        model.put( MARK_SELECTED_REQUEST_STATUS_FILTER, _statusFilter);
+        model.put( MARK_SELECTED_REQUEST_STATUS_FILTER, _statusFilter );
         model.put( MARK_LOCALE, getLocale( ) );
         return getPage( PROPERTY_PAGE_TITLE_MANAGE_REQUESTS, TEMPLATE_MANAGE_REQUESTS, model );
     }
@@ -177,11 +177,13 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
     public String dofilterRequest( HttpServletRequest request ) throws AccessDeniedException
     {
         String statusFilterValue = request.getParameter( "request_status_filter" );
-        if(statusFilterValue != "none") {
-            _statusFilter = RequestStatus.getRequestStatusByValue( statusFilterValue );   
+        if ( statusFilterValue != "none" )
+        {
+            _statusFilter = FileStorageTransferRequestStatus.getRequestStatusByValue( statusFilterValue );
         }
-        else {
-            _statusFilter = RequestStatus.STATUS_UNKNOWN;
+        else
+        {
+            _statusFilter = FileStorageTransferRequestStatus.STATUS_UNKNOWN;
         }
         return redirectView( request, VIEW_MANAGE_REQUESTS );
     }
@@ -193,9 +195,9 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
      * @return the populated list of items corresponding to the id List
      */
     @Override
-    List<FileTransferRequest> getItemsFromIds( List<Integer> listIds )
+    List<FileStorageTransferRequest> getItemsFromIds( List<Integer> listIds )
     {
-        List<FileTransferRequest> listRequest = FileTransferRequestHome.getRequestsListByIds( listIds );
+        List<FileStorageTransferRequest> listRequest = FileStorageTransferRequestHome.getRequestsListByIds( listIds );
         // keep original order
         return listRequest.stream( ).sorted( Comparator.comparingInt( notif -> listIds.indexOf( notif.getId( ) ) ) ).collect( Collectors.toList( ) );
     }
@@ -225,20 +227,20 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
     public String getCreateRequest( HttpServletRequest request )
     {
 
-        _fileTransferRequest = ( _fileTransferRequest != null ) ? _fileTransferRequest : new FileTransferRequest( );
+        _fileTransferRequest = ( _fileTransferRequest != null ) ? _fileTransferRequest : new FileStorageTransferRequest( );
 
-        List<String> listFileServices = SpringContextService.getBeansOfType( IFileStoreServiceProvider.class )
-            .stream( ).map( IFileStoreServiceProvider::getName ).collect( Collectors.toList( ) );
+        List<String> listFileServices = SpringContextService.getBeansOfType( IFileStoreServiceProvider.class ).stream( )
+                .map( IFileStoreServiceProvider::getName ).collect( Collectors.toList( ) );
 
         Map<String, Object> model = getModel( );
         model.put( MARK_REQUEST, _fileTransferRequest );
-        model.put ( MARK_FILESERVICES_LIST, listFileServices );
+        model.put( MARK_FILESERVICES_LIST, listFileServices );
         model.put( SecurityTokenService.MARK_TOKEN, SecurityTokenService.getInstance( ).getToken( request, ACTION_CREATE_REQUEST ) );
 
         return getPage( PROPERTY_PAGE_TITLE_CREATE_REQUEST, TEMPLATE_CREATE_REQUEST, model );
     }
 
-        /**
+    /**
      * Returns the form to create a request
      *
      * @param request
@@ -252,11 +254,11 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
 
         if ( _fileTransferRequest == null || ( _fileTransferRequest.getId( ) != nId ) )
         {
-            Optional<FileTransferRequest> optRequest = FileTransferRequestHome.findByPrimaryKey( nId );
+            Optional<FileStorageTransferRequest> optRequest = FileStorageTransferRequestHome.findByPrimaryKey( nId );
             _fileTransferRequest = optRequest.orElseThrow( ( ) -> new AppException( ERROR_RESOURCE_NOT_FOUND ) );
         }
-        //_fileTransferRequest.setLocalStatus( getLocale() );
-        List<FileRequestError> errorList = FileRequestErrorHome.getErrorsListByRequestId( _fileTransferRequest.getId() );
+        // _fileTransferRequest.setLocalStatus( getLocale() );
+        List<FileStorageTransferError> errorList = FileStorageTransferErrorHome.getErrorsListByRequestId( _fileTransferRequest.getId( ) );
 
         Map<String, Object> model = getModel( );
         model.put( MARK_REQUEST, _fileTransferRequest );
@@ -264,7 +266,6 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
 
         return getPage( PROPERTY_PAGE_TITLE_VIEW_REQUEST, TEMPLATE_VIEW_REQUEST, model );
     }
-
 
     /**
      * Process the data capture form of a new request
@@ -279,12 +280,12 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
     {
         populate( _fileTransferRequest, request, getLocale( ) );
 
-        Timestamp currentTime = Timestamp.from( Instant.now() );
+        Timestamp currentTime = Timestamp.from( Instant.now( ) );
 
-        _fileTransferRequest.setRequestStatus( RequestStatus.STATUS_TODO );
+        _fileTransferRequest.setRequestStatus( FileStorageTransferRequestStatus.STATUS_TODO );
         _fileTransferRequest.setRetryCount( 0 );
-        _fileTransferRequest.setCreationTime(currentTime );
-        _fileTransferRequest.setExecutionTime( currentTime);
+        _fileTransferRequest.setCreationTime( currentTime );
+        _fileTransferRequest.setExecutionTime( currentTime );
 
         if ( !SecurityTokenService.getInstance( ).validate( request, ACTION_CREATE_REQUEST ) )
         {
@@ -297,7 +298,7 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
             return redirectView( request, VIEW_CREATE_REQUEST );
         }
 
-        FileTransferRequestHome.create( _fileTransferRequest );
+        FileStorageTransferRequestHome.create( _fileTransferRequest );
         addInfo( INFO_REQUEST_CREATED, getLocale( ) );
         resetListId( );
 
@@ -320,11 +321,11 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
 
         String strMessageUrl = AdminMessageService.getMessageUrl( request, MESSAGE_CONFIRM_REMOVE_REQUEST, url.getUrl( ), AdminMessage.TYPE_CONFIRMATION );
 
-        FileRequestErrorHome.getErrorsListByRequestId( nId ).forEach( error -> {
-            FileRequestErrorHome.remove( error.getId( ) );
-        });
+        FileStorageTransferErrorHome.getErrorsListByRequestId( nId ).forEach( error -> {
+            FileStorageTransferErrorHome.remove( error.getId( ) );
+        } );
 
-        FileTransferRequestHome.remove( nId );
+        FileStorageTransferRequestHome.remove( nId );
 
         return redirect( request, strMessageUrl );
     }
@@ -343,30 +344,30 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
 
         if ( _fileTransferRequest == null || ( _fileTransferRequest.getId( ) != nId ) )
         {
-            Optional<FileTransferRequest> optRequest = FileTransferRequestHome.findByPrimaryKey( nId );
+            Optional<FileStorageTransferRequest> optRequest = FileStorageTransferRequestHome.findByPrimaryKey( nId );
             _fileTransferRequest = optRequest.orElseThrow( ( ) -> new AppException( ERROR_RESOURCE_NOT_FOUND ) );
         }
 
-        _fileTransferRequest.setRequestStatus( RequestStatus.STATUS_TODO );
-        _fileTransferRequest.setRetryCount(0);
-        _fileTransferRequest.setExecutionTime( Timestamp.from(Instant.now()) );
+        _fileTransferRequest.setRequestStatus( FileStorageTransferRequestStatus.STATUS_TODO );
+        _fileTransferRequest.setRetryCount( 0 );
+        _fileTransferRequest.setExecutionTime( Timestamp.from( Instant.now( ) ) );
 
-        FileTransferRequestHome.update(_fileTransferRequest);
+        FileStorageTransferRequestHome.update( _fileTransferRequest );
         addInfo( INFO_RESET_FILE_TRANSFER_REQUEST_STATUS, getLocale( ) );
         resetListId( );
-        
+
         return redirectView( request, VIEW_MANAGE_REQUESTS );
     }
 
     @Action( ACTION_RESET_ALL_FILE_TRANSFER_REQUEST_STATUS )
     public String doResetAllFileRequestStatus( HttpServletRequest request )
     {
-        List<FileTransferRequest> fileRequestList = FileTransferRequestHome.getRequestsListByStatus( RequestStatus.STATUS_ERROR.getValue() );
+        List<FileStorageTransferRequest> fileRequestList = FileStorageTransferRequestHome.getRequestsListByStatus( FileStorageTransferRequestStatus.STATUS_ERROR.getValue( ) );
 
         fileRequestList.forEach( fileRequest -> {
-            fileRequest.setRequestStatus( RequestStatus.STATUS_TODO );
-            FileTransferRequestHome.update(fileRequest);
-        });
+            fileRequest.setRequestStatus( FileStorageTransferRequestStatus.STATUS_TODO );
+            FileStorageTransferRequestHome.update( fileRequest );
+        } );
 
         addInfo( INFO_RESET_ALL_FILE_TRANSFER_REQUEST_STATUS, getLocale( ) );
         resetListId( );
@@ -380,11 +381,11 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
 
         if ( _fileTransferRequest == null || ( _fileTransferRequest.getId( ) != nId ) )
         {
-            Optional<FileTransferRequest> optRequest = FileTransferRequestHome.findByPrimaryKey( nId );
+            Optional<FileStorageTransferRequest> optRequest = FileStorageTransferRequestHome.findByPrimaryKey( nId );
             _fileTransferRequest = optRequest.orElseThrow( ( ) -> new AppException( ERROR_RESOURCE_NOT_FOUND ) );
         }
 
-        FileSwitcherService.TransferFileToNewFileService( _fileTransferRequest );
+        FileStorageTransferService.TransferFileToTargetFileService( _fileTransferRequest );
         addInfo( INFO_REQUEST_PLAYED, getLocale( ) );
 
         return redirectView( request, VIEW_MANAGE_REQUESTS );
@@ -404,16 +405,16 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
 
         if ( _fileTransferRequest == null || ( _fileTransferRequest.getId( ) != nId ) )
         {
-            Optional<FileTransferRequest> optRequest = FileTransferRequestHome.findByPrimaryKey( nId );
+            Optional<FileStorageTransferRequest> optRequest = FileStorageTransferRequestHome.findByPrimaryKey( nId );
             _fileTransferRequest = optRequest.orElseThrow( ( ) -> new AppException( ERROR_RESOURCE_NOT_FOUND ) );
         }
-        //_fileTransferRequest.setLocalStatus(getLocale());
-        List<String> listFileServices = SpringContextService.getBeansOfType( IFileStoreServiceProvider.class )
-        .stream( ).map( IFileStoreServiceProvider::getName ).collect( Collectors.toList( ) );
+        // _fileTransferRequest.setLocalStatus(getLocale());
+        List<String> listFileServices = SpringContextService.getBeansOfType( IFileStoreServiceProvider.class ).stream( )
+                .map( IFileStoreServiceProvider::getName ).collect( Collectors.toList( ) );
 
         Map<String, Object> model = getModel( );
         model.put( MARK_REQUEST, _fileTransferRequest );
-        model.put ( MARK_FILESERVICES_LIST, listFileServices );
+        model.put( MARK_FILESERVICES_LIST, listFileServices );
         model.put( SecurityTokenService.MARK_TOKEN, SecurityTokenService.getInstance( ).getToken( request, ACTION_MODIFY_REQUEST ) );
 
         return getPage( PROPERTY_PAGE_TITLE_MODIFY_REQUEST, TEMPLATE_MODIFY_REQUEST, model );
@@ -429,7 +430,8 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
      */
     @Action( ACTION_MODIFY_REQUEST )
     public String doModifyRequest( HttpServletRequest request ) throws AccessDeniedException
-    {        populate( _fileTransferRequest, request, getLocale( ) );
+    {
+        populate( _fileTransferRequest, request, getLocale( ) );
 
         if ( !SecurityTokenService.getInstance( ).validate( request, ACTION_MODIFY_REQUEST ) )
         {
@@ -442,7 +444,7 @@ public class RequestJspBean extends AbstractPaginatorJspBean<Integer, FileTransf
             return redirect( request, VIEW_MODIFY_REQUEST, PARAMETER_ID_REQUEST, _fileTransferRequest.getId( ) );
         }
 
-        FileTransferRequestHome.update( _fileTransferRequest );
+        FileStorageTransferRequestHome.update( _fileTransferRequest );
         addInfo( INFO_REQUEST_UPDATED, getLocale( ) );
         resetListId( );
 

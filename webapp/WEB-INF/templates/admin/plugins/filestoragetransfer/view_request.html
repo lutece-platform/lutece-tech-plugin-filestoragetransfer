@@ -9,8 +9,8 @@
 								<@messages errors=errors />
 								<@input type="hidden" id="id" name="id" value="${request.id}"/>
 
-								<@formGroup labelFor='old_file_key' rows=2 labelKey='#i18n{filestoragetransfer.modify_request.labelOldFileKey}' mandatory=true>
-									<@input type='text' readonly=true id='old_file_key' name='old_file_key'  maxlength=255 value='${request.oldFileKey!\'\'}' tabIndex='0' />
+								<@formGroup labelFor='old_file_key' rows=2 labelKey='#i18n{filestoragetransfer.modify_request.labelSourceFileKey}' mandatory=true>
+									<@input type='text' readonly=true id='old_file_key' name='old_file_key'  maxlength=255 value='${request.sourceFileKey!\'\'}' tabIndex='0' />
 								</@formGroup>
 								<@formGroup rows=2 labelFor='source_fileserviceprovider_name' labelKey='#i18n{filestoragetransfer.modify_request.labelSourceFileserviceproviderName}' mandatory=true>
 									<@input type='text' readonly=true id='source_fileserviceprovider_name' name='source_fileserviceprovider_name'  maxlength=255 value='${request.sourceFileserviceproviderName!\'\'}' tabIndex='1' />

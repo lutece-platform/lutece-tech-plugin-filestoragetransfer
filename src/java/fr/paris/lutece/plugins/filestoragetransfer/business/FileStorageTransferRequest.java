@@ -43,16 +43,16 @@ import java.time.Instant;
 /**
  * This is the business class for the object Request
  */
-public class FileTransferRequest implements Serializable
+public class FileStorageTransferRequest implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
     // Variables declarations
     private int _nId;
 
-    @NotEmpty( message = "#i18n{filestoragetransfer.validation.request.OldFileKey.notEmpty}" )
-    @Size( max = 255, message = "#i18n{filestoragetransfer.validation.request.OldFileKey.size}" )
-    private String _strOldFileKey;
+    @NotEmpty( message = "#i18n{filestoragetransfer.validation.request.SourceFileKey.notEmpty}" )
+    @Size( max = 255, message = "#i18n{filestoragetransfer.validation.request.SourceFileKey.size}" )
+    private String _strSourceFileKey;
 
     @NotEmpty( message = "#i18n{filestoragetransfer.validation.request.SourceFileserviceproviderName.notEmpty}" )
     @Size( max = 255, message = "#i18n{filestoragetransfer.validation.request.SourceFileserviceproviderName.size}" )
@@ -62,10 +62,10 @@ public class FileTransferRequest implements Serializable
     @Size( max = 255, message = "#i18n{filestoragetransfer.validation.request.TargetFileserviceproviderName.size}" )
     private String _strTargetFileserviceproviderName;
 
-    @Size( max = 255, message = "#i18n{filestoragetransfer.validation.request.OldFileKey.size}" )
-    private String _strNewFileKey;
+    @Size( max = 255, message = "#i18n{filestoragetransfer.validation.request.SourceFileKey.size}" )
+    private String _strTargetFileKey;
 
-    private RequestStatus _nRequestStatus;
+    private FileStorageTransferRequestStatus _nRequestStatus;
 
     private int _nRetryCount;
 
@@ -78,22 +78,23 @@ public class FileTransferRequest implements Serializable
     private String _strContactMail;
 
     // Constructor
-    public FileTransferRequest( String oldFileKey, String sourceFileserviceproviderName , String targetFileserviceproviderName,
-    String requestContext, String contactMail )
+    public FileStorageTransferRequest( String sourceFileKey, String sourceFileserviceproviderName, String targetFileserviceproviderName, String requestContext,
+            String contactMail )
     {
-        _strOldFileKey = oldFileKey;
+        _strSourceFileKey = sourceFileKey;
         _strSourceFileserviceproviderName = sourceFileserviceproviderName;
         _strTargetFileserviceproviderName = targetFileserviceproviderName;
-        _nRequestStatus = RequestStatus.STATUS_TODO;
+        _nRequestStatus = FileStorageTransferRequestStatus.STATUS_TODO;
         _nRetryCount = 0;
-        _tExecutionTime = Timestamp.from(Instant.now());
-        _tCreationTime = Timestamp.from(Instant.now());
+        _tExecutionTime = Timestamp.from( Instant.now( ) );
+        _tCreationTime = Timestamp.from( Instant.now( ) );
         _strRequestContext = requestContext;
         _strContactMail = contactMail;
     }
 
-    public FileTransferRequest () {
-        
+    public FileStorageTransferRequest( )
+    {
+
     }
 
     /**
@@ -118,24 +119,24 @@ public class FileTransferRequest implements Serializable
     }
 
     /**
-     * Returns the OldFileKey
+     * Returns the SourceFileKey
      * 
-     * @return The OldFileKey
+     * @return The SourceFileKey
      */
-    public String getOldFileKey( )
+    public String getSourceFileKey( )
     {
-        return _strOldFileKey;
+        return _strSourceFileKey;
     }
 
     /**
-     * Sets the OldFileKey
+     * Sets the SourceFileKey
      * 
-     * @param strOldFileKey
-     *            The OldFileKey
+     * @param strSourceFileKey
+     *            The SourceFileKey
      */
-    public void setOldFileKey( String strOldFileKey )
+    public void setSourceFileKey( String strSourceFileKey )
     {
-        _strOldFileKey = strOldFileKey;
+        _strSourceFileKey = strSourceFileKey;
     }
 
     /**
@@ -160,24 +161,24 @@ public class FileTransferRequest implements Serializable
     }
 
     /**
-     * Returns the NewFileKey
+     * Returns the TargetFileKey
      * 
-     * @return The NewFileKey
+     * @return The TargetFileKey
      */
-    public String getNewFileKey( )
+    public String getTargetFileKey( )
     {
-        return _strNewFileKey;
+        return _strTargetFileKey;
     }
 
     /**
-     * Sets the NewFileKey
+     * Sets the TargetFileKey
      * 
-     * @param strNewFileKey
-     *            The NewFileKey
+     * @param strTargetFileKey
+     *            The TargetFileKey
      */
-    public void setNewFileKey( String strNewFileKey )
+    public void setTargetFileKey( String strTargetFileKey )
     {
-        _strNewFileKey = strNewFileKey;
+        _strTargetFileKey = strTargetFileKey;
     }
 
     /**
@@ -206,7 +207,7 @@ public class FileTransferRequest implements Serializable
      * 
      * @return The RequestStatus
      */
-    public RequestStatus getRequestStatus( )
+    public FileStorageTransferRequestStatus getRequestStatus( )
     {
         return _nRequestStatus;
     }
@@ -217,7 +218,7 @@ public class FileTransferRequest implements Serializable
      * @param nRequestStatus
      *            The RequestStatus
      */
-    public void setRequestStatus( RequestStatus nRequestStatus )
+    public void setRequestStatus( FileStorageTransferRequestStatus nRequestStatus )
     {
         _nRequestStatus = nRequestStatus;
     }
@@ -242,8 +243,8 @@ public class FileTransferRequest implements Serializable
     {
         _nRetryCount = nRetryCount;
     }
-    
-    public void upRetryCount()
+
+    public void upRetryCount( )
     {
         _nRetryCount = _nRetryCount + 1;
     }
@@ -289,7 +290,7 @@ public class FileTransferRequest implements Serializable
     {
         _tCreationTime = tCreationTime;
     }
-    
+
     public String getRequestContext( )
     {
         return _strRequestContext;

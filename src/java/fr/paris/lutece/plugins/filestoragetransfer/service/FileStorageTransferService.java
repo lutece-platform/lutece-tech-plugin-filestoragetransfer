@@ -41,11 +41,11 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequest;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileRequestError;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileRequestErrorHome;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequestHome;
-import fr.paris.lutece.plugins.filestoragetransfer.business.RequestStatus;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferRequest;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferError;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferErrorHome;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferRequestHome;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferRequestStatus;
 import fr.paris.lutece.portal.business.file.File;
 import fr.paris.lutece.portal.service.file.FileService;
 import fr.paris.lutece.portal.service.file.FileServiceException;
@@ -55,9 +55,7 @@ import fr.paris.lutece.util.html.HtmlTemplate;
 import fr.paris.lutece.portal.service.mail.MailService;
 import fr.paris.lutece.portal.service.template.AppTemplateService;
 
-
-
-public class FileSwitcherService
+public class FileStorageTransferService
 {
     private static int _nRetryDelay = AppPropertiesService.getPropertyInt( "filestoragetransfer.RetryDelay", 3600 );
     private static int _nRetryLimit = AppPropertiesService.getPropertyInt( "filestoragetransfer.RetryLimit", 0 );
@@ -68,104 +66,109 @@ public class FileSwitcherService
     private static String _sMailRecipient = AppPropertiesService.getProperty( "filestoragetransfer.MailRecipient" );
     private static String _sApplicationCode = AppPropertiesService.getProperty( "lutece.code" );
     private static String _sSiteName = AppPropertiesService.getProperty( "lutece.name" );
-    
-    private static String TEMPLATE_MAIL = "admin/plugins/filestoragetransfer/mail/mail_filestoragetransfer.html" ;
+
+    private static String TEMPLATE_MAIL = "admin/plugins/filestoragetransfer/mail/mail_filestoragetransfer.html";
 
     private static final String MARK_REQUEST = "request";
     private static final String MARK_ERROR = "error";
 
-    private static StringWriter sw = new StringWriter();
-    private static PrintWriter pw = new PrintWriter(sw);
-    
-    public static void TransferFileToNewFileService ( FileTransferRequest request )
+    private static StringWriter sw = new StringWriter( );
+    private static PrintWriter pw = new PrintWriter( sw );
+
+    public static void TransferFileToTargetFileService( FileStorageTransferRequest request )
     {
-        try {
-            String newFileKey = TransferFileToNewFileService ( 
-                request.getOldFileKey( ), 
-                request.getSourceFileserviceproviderName( ),
-                request.getTargetFileserviceproviderName( ) 
-            );
+        try
+        {
+            String targetFileKey = TransferFileToTargetFileService( request.getSourceFileKey( ), request.getSourceFileserviceproviderName( ),
+                    request.getTargetFileserviceproviderName( ) );
 
-            request.setNewFileKey( newFileKey );
-            request.setRequestStatus( RequestStatus.STATUS_DONE );
-            FileTransferRequestHome.update( request );
+            request.setTargetFileKey( targetFileKey );
+            request.setRequestStatus( FileStorageTransferRequestStatus.STATUS_DONE );
+            FileStorageTransferRequestHome.update( request );
 
-            FileSwitcherNotifierService _fileSwitcher = FileSwitcherNotifierService.instance();
-            _fileSwitcher.notifyFileTransferListeners(request);
+            FileStorageTransferNotifierService _fileSwitcher = FileStorageTransferNotifierService.instance( );
+            _fileSwitcher.notifyFileTransferListeners( request );
         }
-        catch ( FileServiceException e ) {
-            HandleException( request, e, e.getResponseCode() != null ? e.getResponseCode() : 404 );                     
+        catch( FileServiceException e )
+        {
+            HandleException( request, e, e.getResponseCode( ) != null ? e.getResponseCode( ) : 404 );
         }
-        catch ( Exception e ) {
+        catch( Exception e )
+        {
             HandleException( request, e, 500 );
         }
     }
 
-    public static String TransferFileToNewFileService ( String strOldFileKey, String strSourceFileServiceProvider, String strTargetFileServiceProvider )
+    public static String TransferFileToTargetFileService( String strSourceFileKey, String strSourceFileServiceProvider, String strTargetFileServiceProvider )
             throws FileServiceException
     {
         IFileStoreServiceProvider sourceFileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( strSourceFileServiceProvider );
         IFileStoreServiceProvider targetFileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( strTargetFileServiceProvider );
 
-        File fileToTransfer = sourceFileStoreService.getFile( strOldFileKey );
+        File fileToTransfer = sourceFileStoreService.getFile( strSourceFileKey );
 
-        if( fileToTransfer == null ) {
+        if ( fileToTransfer == null )
+        {
             throw new FileServiceException( "File not found", 404, null );
         }
 
-        String strNewFileKey = targetFileStoreService.storeFile( fileToTransfer );
+        String strTargetFileKey = targetFileStoreService.storeFile( fileToTransfer );
 
-        sourceFileStoreService.delete( strOldFileKey );
+        sourceFileStoreService.delete( strSourceFileKey );
 
-        return strNewFileKey;
+        return strTargetFileKey;
 
     }
 
-    private static void HandleException ( FileTransferRequest request, Exception e, int ResponseCode ) 
+    private static void HandleException( FileStorageTransferRequest request, Exception e, int ResponseCode )
     {
-        request.upRetryCount();
-        
-        if(request.getRetryCount() >= _nRetryLimit) 
+        request.upRetryCount( );
+
+        if ( request.getRetryCount( ) >= _nRetryLimit )
         {
-            request.setRequestStatus( RequestStatus.STATUS_ERROR );
+            request.setRequestStatus( FileStorageTransferRequestStatus.STATUS_ERROR );
         }
-        else 
+        else
         {
-            request.setRequestStatus( RequestStatus.STATUS_FAILED );
+            request.setRequestStatus( FileStorageTransferRequestStatus.STATUS_FAILED );
         }
 
         request.setExecutionTime( Timestamp.from( Instant.now( ).plusSeconds( _nRetryDelay ) ) );
-        FileTransferRequestHome.update( request );
+        FileStorageTransferRequestHome.update( request );
 
-        e.printStackTrace(pw);
+        e.printStackTrace( pw );
 
-        FileRequestError error = new FileRequestError( request.getId(), ResponseCode, e.getMessage() == null ? "" : e.getMessage(), sw.toString(), Timestamp.from( Instant.now( ) ) );
-        FileRequestErrorHome.create( error );
+        FileStorageTransferError error = new FileStorageTransferError( request.getId( ), ResponseCode, e.getMessage( ) == null ? "" : e.getMessage( ), sw.toString( ),
+                Timestamp.from( Instant.now( ) ) );
+        FileStorageTransferErrorHome.create( error );
 
-        if(_bNotificationsEnabled) 
+        if ( _bNotificationsEnabled )
         {
             Map<String, Object> model = new HashMap<>( );
             model.put( MARK_REQUEST, request );
             model.put( MARK_ERROR, error );
 
             HtmlTemplate template = AppTemplateService.getTemplate( TEMPLATE_MAIL, null, model );
-            if(request.getContactMail() != null ) {
-                MailService.sendMailHtml(_sMailRecipient, _sApplicationCode + " " + _sSiteName, _sMailSender, _sMailSubject, template.getHtml());
+            if ( request.getContactMail( ) != null )
+            {
+                MailService.sendMailHtml( _sMailRecipient, _sApplicationCode + " " + _sSiteName, _sMailSender, _sMailSubject, template.getHtml( ) );
             }
-            else {
-                MailService.sendMailHtml(request.getContactMail(), null, _sMailRecipient, _sApplicationCode + " " + _sSiteName, _sMailSender, _sMailSubject, template.getHtml());
+            else
+            {
+                MailService.sendMailHtml( request.getContactMail( ), null, _sMailRecipient, _sApplicationCode + " " + _sSiteName, _sMailSender, _sMailSubject,
+                        template.getHtml( ) );
             }
         }
     }
 
     public Timestamp getExecutionTime( )
     {
-        return Timestamp.from( Instant.now() );
+        return Timestamp.from( Instant.now( ) );
     }
 
     public Timestamp getDelayedExecutionTime( long retryDelay )
     {
-        return Timestamp.from( Instant.now().plusSeconds( retryDelay ) );
+        return Timestamp.from( Instant.now( ).plusSeconds( retryDelay ) );
     }
 
 }

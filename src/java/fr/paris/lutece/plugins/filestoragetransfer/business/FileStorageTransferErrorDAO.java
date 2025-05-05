@@ -46,7 +46,7 @@ import java.util.Optional;
 /**
  * This class provides Data Access methods for Error objects
  */
-public final class FileRequestErrorDAO implements IFileRequestErrorDAO
+public final class FileStorageTransferErrorDAO implements IFileStorageTransferErrorDAO
 {
     // Constants
     private static final String SQL_QUERY_INSERT = "INSERT INTO filestoragetransfer_error ( id_request, code, error_message, error_trace, execution_time ) VALUES ( ?, ?, ?, ?, ? ) ";
@@ -64,7 +64,7 @@ public final class FileRequestErrorDAO implements IFileRequestErrorDAO
      * {@inheritDoc }
      */
     @Override
-    public void insert( FileRequestError error, Plugin plugin )
+    public void insert( FileStorageTransferError error, Plugin plugin )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_INSERT, Statement.RETURN_GENERATED_KEYS, plugin ) )
         {
@@ -88,13 +88,13 @@ public final class FileRequestErrorDAO implements IFileRequestErrorDAO
      * {@inheritDoc }
      */
     @Override
-    public Optional<FileRequestError> load( int nKey, Plugin plugin )
+    public Optional<FileStorageTransferError> load( int nKey, Plugin plugin )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID, plugin ) )
         {
             daoUtil.setInt( 1, nKey );
             daoUtil.executeQuery( );
-            FileRequestError error = null;
+            FileStorageTransferError error = null;
 
             if ( daoUtil.next( ) )
             {
@@ -122,7 +122,7 @@ public final class FileRequestErrorDAO implements IFileRequestErrorDAO
      * {@inheritDoc }
      */
     @Override
-    public void store( FileRequestError error, Plugin plugin )
+    public void store( FileStorageTransferError error, Plugin plugin )
     {
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_UPDATE, plugin ) )
         {
@@ -142,9 +142,9 @@ public final class FileRequestErrorDAO implements IFileRequestErrorDAO
      * {@inheritDoc }
      */
     @Override
-    public List<FileRequestError> selectErrorsList( Plugin plugin )
+    public List<FileStorageTransferError> selectErrorsList( Plugin plugin )
     {
-        List<FileRequestError> errorList = new ArrayList<>( );
+        List<FileStorageTransferError> errorList = new ArrayList<>( );
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECTALL, plugin ) )
         {
             daoUtil.executeQuery( );
@@ -202,9 +202,9 @@ public final class FileRequestErrorDAO implements IFileRequestErrorDAO
      * {@inheritDoc }
      */
     @Override
-    public List<FileRequestError> selectErrorsListByIds( Plugin plugin, List<Integer> listIds )
+    public List<FileStorageTransferError> selectErrorsListByIds( Plugin plugin, List<Integer> listIds )
     {
-        List<FileRequestError> errorList = new ArrayList<>( );
+        List<FileStorageTransferError> errorList = new ArrayList<>( );
 
         StringBuilder builder = new StringBuilder( );
 
@@ -240,15 +240,14 @@ public final class FileRequestErrorDAO implements IFileRequestErrorDAO
 
     }
 
-
     /**
      * {@inheritDoc }
      */
     @Override
-    public List<FileRequestError> selectErrorsListByRequestId( Plugin plugin, int RequestId )
+    public List<FileStorageTransferError> selectErrorsListByRequestId( Plugin plugin, int RequestId )
     {
-        List<FileRequestError> errorList = new ArrayList<>( );
-        
+        List<FileStorageTransferError> errorList = new ArrayList<>( );
+
         try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_ID_REQUEST, plugin ) )
         {
             daoUtil.setInt( 1, RequestId );
@@ -264,15 +263,15 @@ public final class FileRequestErrorDAO implements IFileRequestErrorDAO
         return errorList;
     }
 
-    private FileRequestError loadFromDaoUtil( DAOUtil daoUtil )
+    private FileStorageTransferError loadFromDaoUtil( DAOUtil daoUtil )
     {
 
-        FileRequestError error = new FileRequestError( );
+        FileStorageTransferError error = new FileStorageTransferError( );
         int nIndex = 1;
 
         error.setId( daoUtil.getInt( nIndex++ ) );
         error.setIdRequest( daoUtil.getInt( nIndex++ ) );
-        error.setCode( daoUtil.getInt( nIndex++) );
+        error.setCode( daoUtil.getInt( nIndex++ ) );
         error.setErrorMessage( daoUtil.getString( nIndex++ ) );
         error.setErrorTrace( daoUtil.getString( nIndex++ ) );
         error.setExecutionTime( daoUtil.getTimestamp( nIndex ) );

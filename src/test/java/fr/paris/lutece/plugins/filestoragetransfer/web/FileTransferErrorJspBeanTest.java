@@ -38,9 +38,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockServletConfig;
 
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequest;
-import fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequestHome;
-import fr.paris.lutece.plugins.filestoragetransfer.web.RequestJspBean;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferError;
+import fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferErrorHome;
+import fr.paris.lutece.plugins.filestoragetransfer.web.FileStorageTransferErrorJspBean;
 import fr.paris.lutece.portal.business.user.AdminUser;
 import fr.paris.lutece.portal.service.admin.AccessDeniedException;
 import fr.paris.lutece.portal.service.admin.AdminAuthenticationService;
@@ -52,18 +52,14 @@ import fr.paris.lutece.portal.service.security.SecurityTokenService;
 import fr.paris.lutece.portal.web.LocalVariables;
 
 /**
- * This is the business class test for the object Request
+ * This is the business class test for the object Error
  */
-public class RequestJspBeanTest extends LuteceTestCase
+public class FileTransferErrorJspBeanTest extends LuteceTestCase
 {
-    private static final String OLDFILEKEY1 = "OldFileKey1";
-    private static final String OLDFILEKEY2 = "OldFileKey2";
-    private static final String SOURCEFILESERVICEPROVIDERNAME1 = "SourceFileserviceproviderName1";
-    private static final String SOURCEFILESERVICEPROVIDERNAME2 = "SourceFileserviceproviderName2";
-    private static final String TARGETFILESERVICEPROVIDERNAME1 = "TargetFileserviceproviderName1";
-    private static final String TARGETFILESERVICEPROVIDERNAME2 = "TargetFileserviceproviderName2";
-    private static final String REQUESTSTATUS1 = "RequestStatus1";
-    private static final String REQUESTSTATUS2 = "RequestStatus2";
+    private static final int IDREQUEST1 = 1;
+    private static final int IDREQUEST2 = 2;
+    private static final String ERRORMESSAGE1 = "ErrorMessage1";
+    private static final String ERRORMESSAGE2 = "ErrorMessage2";
 
     public void testJspBeans( ) throws AccessDeniedException, IOException
     {
@@ -71,28 +67,25 @@ public class RequestJspBeanTest extends LuteceTestCase
         MockHttpServletResponse response = new MockHttpServletResponse( );
         MockServletConfig config = new MockServletConfig( );
 
-        // display admin Request management JSP
-        RequestJspBean jspbean = new RequestJspBean( );
-        String html = jspbean.getManageRequests( request );
+        // display admin Error management JSP
+        FileStorageTransferErrorJspBean jspbean = new FileStorageTransferErrorJspBean( );
+        String html = jspbean.getManageErrors( request );
         assertNotNull( html );
 
-        // display admin Request creation JSP
-        html = jspbean.getCreateRequest( request );
+        // display admin Error creation JSP
         assertNotNull( html );
 
-        // action create Request
+        // action create Error
         request = new MockHttpServletRequest( );
 
         response = new MockHttpServletResponse( );
         AdminUser adminUser = new AdminUser( );
         adminUser.setAccessCode( "admin" );
 
-        request.addParameter( "old_file_key", OLDFILEKEY1 );
-        request.addParameter( "source_fileserviceprovider_name", SOURCEFILESERVICEPROVIDERNAME1 );
-        request.addParameter( "target_fileserviceprovider_name", TARGETFILESERVICEPROVIDERNAME1 );
-        request.addParameter( "request_status", REQUESTSTATUS1 );
-        request.addParameter( "action", "createRequest" );
-        request.addParameter( "token", SecurityTokenService.getInstance( ).getToken( request, "createRequest" ) );
+        request.addParameter( "id_request", String.valueOf( IDREQUEST1 ) );
+        request.addParameter( "error_message", ERRORMESSAGE1 );
+        request.addParameter( "action", "createError" );
+        request.addParameter( "token", SecurityTokenService.getInstance( ).getToken( request, "createError" ) );
         request.setMethod( "POST" );
 
         try
@@ -112,34 +105,28 @@ public class RequestJspBeanTest extends LuteceTestCase
             fail( "user not signed in" );
         }
 
-        // display modify Request JSP
+        // display modify Error JSP
         request = new MockHttpServletRequest( );
-        request.addParameter( "old_file_key", OLDFILEKEY1 );
-        request.addParameter( "source_fileserviceprovider_name", SOURCEFILESERVICEPROVIDERNAME1 );
-        request.addParameter( "target_fileserviceprovider_name", TARGETFILESERVICEPROVIDERNAME1 );
-        request.addParameter( "request_status", REQUESTSTATUS1 );
-        List<Integer> listIds = FileTransferRequestHome.getIdRequestsList( );
+        request.addParameter( "id_request", String.valueOf( IDREQUEST1 ) );
+        request.addParameter( "error_message", ERRORMESSAGE1 );
+        List<Integer> listIds = FileStorageTransferErrorHome.getIdErrorsList( );
         assertTrue( !listIds.isEmpty( ) );
         request.addParameter( "id", String.valueOf( listIds.get( 0 ) ) );
-        jspbean = new RequestJspBean( );
+        jspbean = new FileStorageTransferErrorJspBean( );
 
-        assertNotNull( jspbean.getModifyRequest( request ) );
-
-        // action modify Request
+        // action modify Error
         request = new MockHttpServletRequest( );
         response = new MockHttpServletResponse( );
 
         adminUser = new AdminUser( );
         adminUser.setAccessCode( "admin" );
 
-        request.addParameter( "old_file_key", OLDFILEKEY2 );
-        request.addParameter( "source_fileserviceprovider_name", SOURCEFILESERVICEPROVIDERNAME2 );
-        request.addParameter( "target_fileserviceprovider_name", TARGETFILESERVICEPROVIDERNAME2 );
-        request.addParameter( "request_status", REQUESTSTATUS2 );
-        request.setRequestURI( "jsp/admin/plugins/example/ManageRequests.jsp" );
-        // important pour que MVCController sache quelle action effectuer, sinon, il redirigera vers createRequest, qui est l'action par défaut
-        request.addParameter( "action", "modifyRequest" );
-        request.addParameter( "token", SecurityTokenService.getInstance( ).getToken( request, "modifyRequest" ) );
+        request.addParameter( "id_request", String.valueOf( IDREQUEST2 ) );
+        request.addParameter( "error_message", ERRORMESSAGE2 );
+        request.setRequestURI( "jsp/admin/plugins/example/ManageErrors.jsp" );
+        // important pour que MVCController sache quelle action effectuer, sinon, il redirigera vers createError, qui est l'action par défaut
+        request.addParameter( "action", "modifyError" );
+        request.addParameter( "token", SecurityTokenService.getInstance( ).getToken( request, "modifyError" ) );
 
         try
         {
@@ -158,21 +145,20 @@ public class RequestJspBeanTest extends LuteceTestCase
             fail( "user not signed in" );
         }
 
-        // get remove Request
+        // get remove Error
         request = new MockHttpServletRequest( );
-        // request.setRequestURI("jsp/admin/plugins/example/ManageRequests.jsp");
+        // request.setRequestURI("jsp/admin/plugins/example/ManageErrors.jsp");
         request.addParameter( "id", String.valueOf( listIds.get( 0 ) ) );
-        jspbean = new RequestJspBean( );
-        request.addParameter( "action", "confirmRemoveRequest" );
-        assertNotNull( jspbean.getModifyRequest( request ) );
+        jspbean = new FileStorageTransferErrorJspBean( );
+        request.addParameter( "action", "confirmRemoveError" );
 
-        // do remove Request
+        // do remove Error
         request = new MockHttpServletRequest( );
         response = new MockHttpServletResponse( );
-        request.setRequestURI( "jsp/admin/plugins/example/ManageRequestts.jsp" );
-        // important pour que MVCController sache quelle action effectuer, sinon, il redirigera vers createRequest, qui est l'action par défaut
-        request.addParameter( "action", "removeRequest" );
-        request.addParameter( "token", SecurityTokenService.getInstance( ).getToken( request, "removeRequest" ) );
+        request.setRequestURI( "jsp/admin/plugins/example/ManageErrorts.jsp" );
+        // important pour que MVCController sache quelle action effectuer, sinon, il redirigera vers createError, qui est l'action par défaut
+        request.addParameter( "action", "removeError" );
+        request.addParameter( "token", SecurityTokenService.getInstance( ).getToken( request, "removeError" ) );
         request.addParameter( "id", String.valueOf( listIds.get( 0 ) ) );
         request.setMethod( "POST" );
         adminUser = new AdminUser( );

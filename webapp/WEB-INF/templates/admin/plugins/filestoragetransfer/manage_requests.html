@@ -27,7 +27,7 @@
     <div class="clearfix"></div>
     <@table>
         <tr>
-            <th>#i18n{filestoragetransfer.manage_requests.columnOldFileKey}</th>
+            <th>#i18n{filestoragetransfer.manage_requests.columnSourceFileKey}</th>
             <th>#i18n{filestoragetransfer.manage_requests.columnSourceFileserviceproviderName}</th>
             <th>#i18n{filestoragetransfer.manage_requests.columnTargetFileserviceproviderName}</th>
             <th>#i18n{filestoragetransfer.manage_requests.columnRequestStatus}</th>
@@ -38,7 +38,7 @@
         <#list request_list as request >
         <tr>
             <td>
-				${request.oldFileKey}
+				${request.sourceFileKey}
 			</td>
             <td>
 				${request.sourceFileserviceproviderName}

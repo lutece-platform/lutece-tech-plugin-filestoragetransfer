@@ -40,7 +40,7 @@ import java.sql.Timestamp;
 /**
  * This is the business class for the object Error
  */
-public class FileRequestError implements Serializable
+public class FileStorageTransferError implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
@@ -48,7 +48,7 @@ public class FileRequestError implements Serializable
     private int _nId;
 
     private int _nIdRequest;
-    
+
     private int _nCode;
 
     @NotEmpty( message = "#i18n{filestoragetransfer.validation.error.ErrorMessage.notEmpty}" )
@@ -58,11 +58,11 @@ public class FileRequestError implements Serializable
 
     private Timestamp _tExecutionTime;
 
-    public FileRequestError( )
+    public FileStorageTransferError( )
     {
     }
 
-    public FileRequestError ( int nIdRequest, int nCode, String strErrorMessage, String strErrorTrace, Timestamp tExecutionTime )
+    public FileStorageTransferError( int nIdRequest, int nCode, String strErrorMessage, String strErrorTrace, Timestamp tExecutionTime )
     {
         _nIdRequest = nIdRequest;
         _nCode = nCode;

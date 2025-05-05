@@ -1,4 +1,4 @@
-<jsp:useBean id="managetransfererrorError" scope="session" class="fr.paris.lutece.plugins.filestoragetransfer.web.ErrorJspBean" />
+<jsp:useBean id="managetransfererrorError" scope="session" class="fr.paris.lutece.plugins.filestoragetransfer.web.FileStorageTransferErrorJspBean" />
 <% String strContent = managetransfererrorError.processController ( request , response ); %>
 
 <%@ page errorPage="../../ErrorPage.jsp" %>

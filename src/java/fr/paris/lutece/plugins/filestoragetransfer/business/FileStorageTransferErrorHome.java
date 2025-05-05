@@ -45,16 +45,16 @@ import java.util.Optional;
 /**
  * This class provides instances management methods (create, find, ...) for Error objects
  */
-public final class FileRequestErrorHome
+public final class FileStorageTransferErrorHome
 {
     // Static variable pointed at the DAO instance
-    private static IFileRequestErrorDAO _dao = SpringContextService.getBean( "filestoragetransfer.errorDAO" );
+    private static IFileStorageTransferErrorDAO _dao = SpringContextService.getBean( "filestoragetransfer.errorDAO" );
     private static Plugin _plugin = PluginService.getPlugin( "filestoragetransfer" );
 
     /**
      * Private constructor - this class need not be instantiated
      */
-    private FileRequestErrorHome( )
+    FileStorageTransferErrorHome( )
     {
     }
 
@@ -65,7 +65,7 @@ public final class FileRequestErrorHome
      *            The instance of the Error which contains the informations to store
      * @return The instance of error which has been created with its primary key.
      */
-    public static FileRequestError create( FileRequestError error )
+    public static FileStorageTransferError create( FileStorageTransferError error )
     {
         _dao.insert( error, _plugin );
 
@@ -79,7 +79,7 @@ public final class FileRequestErrorHome
      *            The instance of the Error which contains the data to store
      * @return The instance of the error which has been updated
      */
-    public static FileRequestError update( FileRequestError error )
+    public static FileStorageTransferError update( FileStorageTransferError error )
     {
         _dao.store( error, _plugin );
 
@@ -104,7 +104,7 @@ public final class FileRequestErrorHome
      *            The error primary key
      * @return an instance of Error
      */
-    public static Optional<FileRequestError> findByPrimaryKey( int nKey )
+    public static Optional<FileStorageTransferError> findByPrimaryKey( int nKey )
     {
         return _dao.load( nKey, _plugin );
     }
@@ -114,7 +114,7 @@ public final class FileRequestErrorHome
      * 
      * @return the list which contains the data of all the error objects
      */
-    public static List<FileRequestError> getErrorsList( )
+    public static List<FileStorageTransferError> getErrorsList( )
     {
         return _dao.selectErrorsList( _plugin );
     }
@@ -146,7 +146,7 @@ public final class FileRequestErrorHome
      *            liste of ids
      * @return the list which contains the data of all the avant objects
      */
-    public static List<FileRequestError> getErrorsListByIds( List<Integer> listIds )
+    public static List<FileStorageTransferError> getErrorsListByIds( List<Integer> listIds )
     {
         return _dao.selectErrorsListByIds( _plugin, listIds );
     }
@@ -156,7 +156,7 @@ public final class FileRequestErrorHome
      * 
      * @return the list which contains the data of all errors with a specific request id
      */
-    public static List<FileRequestError> getErrorsListByRequestId( int RequestId )
+    public static List<FileStorageTransferError> getErrorsListByRequestId( int RequestId )
     {
         return _dao.selectErrorsListByRequestId( _plugin, RequestId );
     }
