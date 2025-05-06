@@ -4,10 +4,10 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd" >
 
-    <bean id="filestoragetransfer.requestDAO" class="fr.paris.lutece.plugins.filestoragetransfer.business.FileTransferRequestDAO" />
-    <bean id="filestoragetransfer.errorDAO" class="fr.paris.lutece.plugins.filestoragetransfer.business.FileRequestErrorDAO" />
+    <bean id="filestoragetransfer.requestDAO" class="fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferRequestDAO" />
+    <bean id="filestoragetransfer.errorDAO" class="fr.paris.lutece.plugins.filestoragetransfer.business.FileStorageTransferErrorDAO" />
 
     <!-- services -->
-    <bean id="filestoragetransfer.fileSwitcherService" class="fr.paris.lutece.plugins.filestoragetransfer.service.FileSwitcherService" />
+    <bean id="filestoragetransfer.fileStorageTransferService" class="fr.paris.lutece.plugins.filestoragetransfer.service.FileStorageTransferService" />
 
 </beans>

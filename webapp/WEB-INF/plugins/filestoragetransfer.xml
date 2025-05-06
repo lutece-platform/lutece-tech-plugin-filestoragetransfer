@@ -112,10 +112,10 @@
     <!-- Daemons -->
     <daemons>
         <daemon>
-            <daemon-id>TransferFileDaemon</daemon-id>
-            <daemon-name>filestoragetransfer.daemon.TransferFileDaemon.name</daemon-name>
-            <daemon-description>filestoragetransfer.daemon.TransferFileDaemon.description</daemon-description>
-            <daemon-class>fr.paris.lutece.plugins.filestoragetransfer.daemon.TransferFileDaemon</daemon-class>
+            <daemon-id>FileStorageTransferDaemon</daemon-id>
+            <daemon-name>filestoragetransfer.daemon.FileStorageTransferDaemon.name</daemon-name>
+            <daemon-description>filestoragetransfer.daemon.FileStorageTransferDaemon.description</daemon-description>
+            <daemon-class>fr.paris.lutece.plugins.filestoragetransfer.daemon.FileStorageTransferDaemon</daemon-class>
         </daemon>
     </daemons>
     
