@@ -49,4 +49,11 @@
         <jiraProjectName>FILESTORAGETRANSFER</jiraProjectName>
         <jiraComponentId></jiraComponentId>
     </properties>
+
+    <scm>
+       <connection>scm:git:https://github.com/lutece-platform/lutece-tech-plugin-filestoragetransfer.git</connection>
+        <developerConnection>scm:git:https://github.com/lutece-platform/lutece-tech-plugin-filestoragetransfer.git</developerConnection>
+        <url>https://github.com/lutece-platform/lutece-tech-plugin-filestoragetransfer.git</url>
+        <tag>HEAD</tag>
+    </scm>
 </project>
