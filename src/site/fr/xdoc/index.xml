@@ -1,30 +1,197 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <document>
     <properties>
-        <title>Plugin filestoragetransfer</title>
+        <title>Plugin FileStorageTransfer</title>
     </properties>
     <head>
-        <!-- Keywords example : "cms, authentication, cms, workflow, seo, collaborative, ..." 
-             Use the language of this xdoc -->
-        <meta name="keywords" content="" />
+        <meta name="keywords" content="lutece,filestoragetransfer,fileservice,plugin" />
     </head>
     <body>
-        <section name="Plugin filestoragetransfer">
-            <!--
-            <p>
-                <img src="images/filestoragetransfer.png" />
-            </p>
-            -->
+        <section name="Plugin FileStorageTransfer">
             <subsection name="Introduction">
-                <p></p>
+                <p>
+                    Le plugin FileStorageTransfer est un plugin pour Lutece qui fournit des mécanismes de transfert de fichiers entre différents systèmes de stockage implémentant l'architecture de service de fichiers (FileService). 
+                    Il permet de déplacer ou copier des fichiers d'un service de stockage à un autre de manière programmatique et configurable.
+                </p>
+                <p>
+                    Les principales fonctionnalités offertes par ce plugin sont:
+                    <ul>
+                        <li>Transfert de fichiers entre différents systèmes de stockage supportés par Lutece</li>
+                        <li>Système de journalisation des opérations de transfert</li>
+                        <li>Console d'administration pour la configuration et le suivi des transferts</li>
+                    </ul>
+                </p>
+                <p>
+                    Ce plugin s'intègre dans l'écosystème Lutece en s'appuyant sur l'architecture de service de fichiers (FileService) et permet d'orchestrer des migrations de fichiers entre différentes implémentations de stockage. 
+                    Il peut être utilisé dans des scénarios de migration de données ou de distribution de contenu.
+                </p>
             </subsection>
             <subsection name="Configuration">
-                <p></p>
+                <p>
+                Le plugin FileStorageTransfer utilise les propriétés suivantes pour sa configuration:
+                <table>
+                        <tr>
+                            <th>Propriété</th>
+                            <th>Description</th>
+                            <th>Valeurs possibles</th>
+                            <th>Valeur par défaut</th>
+                        </tr>
+                        <tr>
+                            <td>filestoragetransfer.UploadLimit</td>
+                            <td>Nombre de fichiers à traiter par lot lors des transferts</td>
+                            <td>Entier positif</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>filestoragetransfer.RetryLimit</td>
+                            <td>Nombre de tentative maximale de transfert en cas d'échec.</td>
+                            <td>Entier positif</td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td>filestoragetransfer.RetryDelay</td>
+                            <td>Temps d'attente entre deux rejeu</td>
+                            <td>Millisecondes</td>
+                            <td>86400</td>
+                        </tr>
+                        <tr>
+                            <td>filestoragetransfer.NotificationsEnabled</td>
+                            <td>Notifications mail d'erreurs de transfert de fichiers</td>
+                            <td>Booléen</td>
+                            <td>true</td>
+                        </tr>
+                        <tr>
+                            <td>filestoragetransfer.MailSubject</td>
+                            <td>Sujet du mail d'erreur de transfert</td>
+                            <td>Chaîne de caractère</td>
+                            <td>File Storage Transfer error</td>
+                        </tr>
+                        <tr>
+                            <td>filestoragetransfer.MailSender</td>
+                            <td>Sujet du mail d'erreur de transfert d'un fichier</td>
+                            <td>Chaîne de caractère</td>
+                            <td>webmaster@localhost</td>
+                        </tr>
+                        <tr>
+                            <td>filestoragetransfer.MailRecipient</td>
+                            <td>Destinataire du mail d'erreur de transfert d'un fichier</td>
+                            <td>Chaîne de caractère</td>
+                            <td>webmaster@localhost</td>
+                        </tr>
+                    </table>
+                </p>
             </subsection>
             <subsection name="Usage">
-                <p></p>
+                <p>Le plugin FileStorageTransfer comprends plusieurs services utiles à son utilisation</p>
+                <br />
+                <p><strong>FileStorageTransferService</strong></p>
+                <p>Service principal qui orchestre les opérations de transfert entre différents systèmes de stockage.</p>
+                <br />
+                <p><strong>Méthodes principales:</strong></p>
+                <p>
+                    <code>TransferFileToTargetFileService( FileStorageTransferRequest request )</code> - Transfère un fichier d'un service de stockage source vers un service de stockage cible, ne retourne pas de nouvel identifiant de fichier.
+                    <br />
+                    <strong>Paramètres:</strong>
+                    <ul>
+                        <li><code>request</code> - Requête de transfert de fichier contenant les informations nécessaires au transfert.</li>
+                    </ul>
+                </p>
+                <br />
+                <p>
+                    <code>TransferFileToTargetFileService( String strSourceFileKey, String strSourceFileServiceProvider, String strTargetFileServiceProvider  )</code> - Transfère un fichier d'un service de stockage source vers un service de stockage cible, retourne un nouvel identifiant de fichier.
+                    <br />
+                    <strong>Paramètres:</strong>
+                    <ul>
+                        <li><code>strSourceFileKey</code> - Clé du fichier source à transférer.</li>
+                        <li><code>strSourceFileServiceProvider</code> - Nom du service de stockage source.</li>
+                        <li><code>strTargetFileServiceProvider</code> - Nom du service de stockage cible.</li>
+                    </ul>
+                </p>    
+                <br />
+                <br />
+                <p><strong>FileStorageTransferNotifierService</strong></p>
+                <p>Service qui gère les différents fournisseurs de stockage disponibles pour les transferts.</p>
+                <br />
+                <p><strong>Méthodes principales:</strong></p>
+                <p>
+                    <code>notifyFileTransferListeners()</code> - Notifie l'ensemble des listeners du transfert d'un fichier
+                </p>
+                <br />
+            </subsection>
+            <subsection name="Droits administratifs">
+                <p>Le plugin définit les droits administratifs suivants, identifiés dans les scripts SQL:</p>
+                <table>
+                    <tr>
+                        <th>ID du droit</th>
+                        <th>Nom</th>
+                        <th>Description</th>
+                        <th>Niveau</th>
+                    </tr>
+                    <tr>
+                        <td>FILESTORAGETRANSFER_REQUEST_MANAGEMENT</td>
+                        <td>Gestion des requêtes de transferts de stockage</td>
+                        <td>Permet de gérer les opérations de transfert entre systèmes de stockage</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>FILESTORAGETRANSFER_REQUEST_CREATION</td>
+                        <td>Gestion des transferts de stockage</td>
+                        <td>Permet de gérer les opérations de transfert entre systèmes de stockage</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>FILESTORAGETRANSFER_ERROR_MANAGEMENT</td>
+                        <td>Gestion des transferts de stockage</td>
+                        <td>Permet de gérer les opérations de transfert entre systèmes de stockage</td>
+                        <td>2</td>
+                    </tr>
+                </table> 
+            </subsection>
+            <subsection name="Listener">
+                <p>
+                    Le plugin FileStorageTransfer propose un listener pour surveiller les événements de transfert de fichiers. 
+                    Ce listener est responsable de gérer pour chaque ressource de stockage le changement d'identifiant de la ressource source vers la ressource cible.
+                    Au transfert d'une ressource, l'ensemble des listeners sont appelés, le contexte de la ressource doit être vérifié pour s'assurer qu'il s'agisse bien d'un fichier d'une ressource géré par ce listener.
+                </p>
+                <strong>Classe principale:</strong>
+                <code>IFileTransferListener</code> - Interface à implémenter pour créer un listener de transfert de fichiers.
+                <br />
+                <strong>Méthodes principales:</strong>
+                <ul>
+                    <li>changeFileService( FileTransferRequest fileTransferRequest ) - Méthode appelée lors du changement d'identifiant de fichier</li>
+                    <li>verifyFileStorageTransferContext( String fileTransferRequestContext ) - Méthode retournant le nom du listener</li>
+                    <li>getName() - Méthode retournant le nom du listener</li>
+                </ul>
+                <br />
+                <strong>Exemple d'implémentation:</strong>
+                <pre>
+                    public class MyFileTransferListener implements IFileTransferListener {
+
+                        private static String _myFileTransferListenerContext = AppPropertiesService.getProperty( "context" );
+
+                        @Override
+                        public void changeFileService(FileTransferRequest fileTransferRequest) {
+                            if ( !verifyFileStorageTransferContext ( fileTransferRequest.getContext )) {
+                                return
+                            }
+                            else {
+                                // Logique de changement de fichier
+                            }
+                        }
+
+                        public boolean verifyFileStorageTransferContext( String fileTransferRequestContext ) {
+                            return fileTransferRequestContext.equals( _myFileTransferListenerContext ) ? true : false;
+                        }
+                        
+                        @Override
+                        public String getName() {
+                            return "MyFileTransferListener";
+                        }
+                    }
+                </pre>
+                <br />
+                <p>Le module <code>lutece-tech-module-workflow-filestoragetransfer</code> propose un exemple d'implémentation pour une ressource d'un formulaire.</p>
             </subsection>
         </section>
     </body>
 </document>
-
