@@ -79,19 +79,31 @@ public class FileStorageTransferService
     {
         try
         {
-            String targetFileKey = TransferFileToTargetFileService( request.getSourceFileKey( ), request.getSourceFileserviceproviderName( ),
-                    request.getTargetFileserviceproviderName( ) );
+            IFileStoreServiceProvider sourceFileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( request.getSourceFileserviceproviderName( ) );
+            IFileStoreServiceProvider targetFileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( request.getTargetFileserviceproviderName( ) );
+
+            String targetFileKey = sendFileToTargetFileService( request.getSourceFileKey( ), sourceFileStoreService,
+                    targetFileStoreService );
 
             request.setTargetFileKey( targetFileKey );
-            request.setRequestStatus( FileStorageTransferRequestStatus.STATUS_DONE );
             FileStorageTransferRequestHome.update( request );
 
             FileStorageTransferNotifierService _fileSwitcher = FileStorageTransferNotifierService.instance( );
             _fileSwitcher.notifyFileTransferListeners( request );
+
+            deleteFileFromSourceFileService( request.getSourceFileKey( ), sourceFileStoreService );
+
+            request.setRequestStatus( FileStorageTransferRequestStatus.STATUS_DONE );
+            FileStorageTransferRequestHome.update( request );
+        
         }
         catch( FileServiceException e )
         {
             HandleException( request, e, e.getResponseCode( ) != null ? e.getResponseCode( ) : 404 );
+        }
+        catch( IllegalStateException e )
+        {
+            HandleException( request, e, 520 );
         }
         catch( Exception e )
         {
@@ -99,12 +111,9 @@ public class FileStorageTransferService
         }
     }
 
-    public static String TransferFileToTargetFileService( String strSourceFileKey, String strSourceFileServiceProvider, String strTargetFileServiceProvider )
+    private static String sendFileToTargetFileService( String strSourceFileKey, IFileStoreServiceProvider sourceFileStoreService, IFileStoreServiceProvider targetFileStoreService )
             throws FileServiceException
     {
-        IFileStoreServiceProvider sourceFileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( strSourceFileServiceProvider );
-        IFileStoreServiceProvider targetFileStoreService = FileService.getInstance( ).getFileStoreServiceProvider( strTargetFileServiceProvider );
-
         File fileToTransfer = sourceFileStoreService.getFile( strSourceFileKey );
 
         if ( fileToTransfer == null )
@@ -113,11 +122,27 @@ public class FileStorageTransferService
         }
 
         String strTargetFileKey = targetFileStoreService.storeFile( fileToTransfer );
-
-        sourceFileStoreService.delete( strSourceFileKey );
-
         return strTargetFileKey;
 
+    }
+
+    private static void deleteFileFromSourceFileService( String strSourceFileKey, IFileStoreServiceProvider sourceFileStoreService ) throws FileServiceException
+    {
+        if ( sourceFileStoreService == null )
+        {
+            throw new FileServiceException( "Source file service provider not found", 404, null );
+        }
+
+        sourceFileStoreService.delete( strSourceFileKey );
+    }
+
+    private static void deleteFileFromTargetFileService( String strTargetFileKey, IFileStoreServiceProvider targetFileStoreService ) throws FileServiceException
+    {
+        if ( targetFileStoreService == null )
+        {
+            throw new FileServiceException( "Target file service provider not found", 404, null );
+        }
+        targetFileStoreService.delete( strTargetFileKey );
     }
 
     private static void HandleException( FileStorageTransferRequest request, Exception e, int ResponseCode )
