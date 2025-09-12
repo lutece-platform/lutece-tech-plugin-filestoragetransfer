@@ -40,8 +40,6 @@ import fr.paris.lutece.test.LuteceTestCase;
 
 import java.util.Optional;
 
-import org.bouncycastle.cert.ocsp.Req;
-
 /**
  * This is the business class test for the object Request
  */
