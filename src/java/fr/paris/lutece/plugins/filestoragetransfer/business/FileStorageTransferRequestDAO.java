@@ -64,6 +64,7 @@ public final class FileStorageTransferRequestDAO implements IFileStorageTransfer
 
     private static final String SQL_FILTER_SELECT_TIMESTAMP_BEFORE = " AND execution_time < ?";
     private static final String SQL_FILTER_ORDER_BY_TIMESTAMP = " ORDER BY execution_time ASC";
+    private static final String SQL_FILTER_REQUEST_LIMIT = " LIMIT ?";
 
     /**
      * {@inheritDoc }
@@ -309,43 +310,22 @@ public final class FileStorageTransferRequestDAO implements IFileStorageTransfer
     {
         List<FileStorageTransferRequest> requestList = new ArrayList<>( );
 
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_STATUS + SQL_FILTER_SELECT_TIMESTAMP_BEFORE + SQL_FILTER_ORDER_BY_TIMESTAMP, plugin ) )
+        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_STATUS + SQL_FILTER_SELECT_TIMESTAMP_BEFORE + SQL_FILTER_ORDER_BY_TIMESTAMP + SQL_FILTER_REQUEST_LIMIT, plugin ) )
         {
             daoUtil.setString( 1, FileStorageTransferRequestStatus.STATUS_FAILED.getValue( ) );
             daoUtil.setTimestamp( 2, executionTime );
+            daoUtil.setInt( 3, limit );
             daoUtil.executeQuery( );
 
             while ( daoUtil.next( ) )
             {
                 requestList.add( loadFromDaoUtil( daoUtil ) );
-                if ( requestList.size( ) <= limit && limit > 0 )
-                {
-                    break;
-                }
             }
 
             daoUtil.setString( 1, FileStorageTransferRequestStatus.STATUS_TODO.getValue( ) );
             daoUtil.executeQuery( );
 
             while ( daoUtil.next( ) )
-            {
-                requestList.add( loadFromDaoUtil( daoUtil ) );
-                if ( requestList.size( ) <= limit && limit > 0 )
-                {
-                    break;
-                }
-            }
-
-            daoUtil.free( );
-
-        }
-        try ( DAOUtil daoUtil = new DAOUtil( SQL_QUERY_SELECT_BY_STATUS + SQL_FILTER_SELECT_TIMESTAMP_BEFORE + SQL_FILTER_ORDER_BY_TIMESTAMP, plugin ) )
-        {
-            daoUtil.setString( 1, FileStorageTransferRequestStatus.STATUS_TODO.getValue( ) );
-            daoUtil.setTimestamp( 2, executionTime );
-            daoUtil.executeQuery( );
-
-            while ( daoUtil.next( ) && requestList.size( ) <= limit && limit > 0 )
             {
                 requestList.add( loadFromDaoUtil( daoUtil ) );
             }
