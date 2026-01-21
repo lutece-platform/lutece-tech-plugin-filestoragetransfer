@@ -1,4 +1,4 @@
-![](https://dev.lutece.paris.fr/jenkins/buildStatus/icon?job=plugin-filestoragetransfer-deploy)
+![](https://dev.lutece.paris.fr/jenkins/buildStatus/icon?job=tech-plugin-filestoragetransfer-deploy)
 [![Alerte](https://dev.lutece.paris.fr/sonar/api/project_badges/measure?project=fr.paris.lutece.plugins%3Aplugin-filestoragetransfer&metric=alert_status)](https://dev.lutece.paris.fr/sonar/dashboard?id=fr.paris.lutece.plugins%3Aplugin-filestoragetransfer)
 [![Line of code](https://dev.lutece.paris.fr/sonar/api/project_badges/measure?project=fr.paris.lutece.plugins%3Aplugin-filestoragetransfer&metric=ncloc)](https://dev.lutece.paris.fr/sonar/dashboard?id=fr.paris.lutece.plugins%3Aplugin-filestoragetransfer)
 [![Coverage](https://dev.lutece.paris.fr/sonar/api/project_badges/measure?project=fr.paris.lutece.plugins%3Aplugin-filestoragetransfer&metric=coverage)](https://dev.lutece.paris.fr/sonar/dashboard?id=fr.paris.lutece.plugins%3Aplugin-filestoragetransfer)
@@ -32,6 +32,14 @@ Le plugin FileStorageTransfer utilise les propriétés suivantes pour sa configu
 | filestoragetransfer.MailRecipient| Destinataire du mail d'erreur de transfert d'un fichier| Chaîne de caractère| webmaster@localhost|
 
 
+Le plugin définit les droits administratifs suivants, identifiés dans les scripts SQL:
+
+| ID du droit| Nom| Description| Niveau|
+|-----------------|-----------------|-----------------|-----------------|
+| FILESTORAGETRANSFER_REQUEST_MANAGEMENT| Gestion des requêtes de transferts de stockage| Permet de gérer les opérations de transfert entre systèmes de stockage| 2|
+| FILESTORAGETRANSFER_REQUEST_CREATION| Gestion des transferts de stockage| Permet de gérer les opérations de transfert entre systèmes de stockage| 2|
+| FILESTORAGETRANSFER_ERROR_MANAGEMENT| Gestion des transferts de stockage| Permet de gérer les opérations de transfert entre systèmes de stockage| 2|
+
 ## Usage
 
 Le plugin FileStorageTransfer comprends plusieurs services utiles à son utilisation
@@ -62,19 +70,7 @@ Service qui gère les différents fournisseurs de stockage disponibles pour les 
 
  `notifyFileTransferListeners()` - Notifie l'ensemble des listeners du transfert d'un fichier
 
-## Droits administratifs
-
-Le plugin définit les droits administratifs suivants, identifiés dans les scripts SQL:
-
-| ID du droit| Nom| Description| Niveau|
-|-----------------|-----------------|-----------------|-----------------|
-| FILESTORAGETRANSFER_REQUEST_MANAGEMENT| Gestion des requêtes de transferts de stockage| Permet de gérer les opérations de transfert entre systèmes de stockage| 2|
-| FILESTORAGETRANSFER_REQUEST_CREATION| Gestion des transferts de stockage| Permet de gérer les opérations de transfert entre systèmes de stockage| 2|
-| FILESTORAGETRANSFER_ERROR_MANAGEMENT| Gestion des transferts de stockage| Permet de gérer les opérations de transfert entre systèmes de stockage| 2|
-
-## Listener
-
-Le plugin FileStorageTransfer propose un listener pour surveiller les événements de transfert de fichiers. Ce listener est responsable de gérer pour chaque ressource de stockage le changement d'identifiant de la ressource source vers la ressource cible.Au transfert d'une ressource, l'ensemble des listeners sont appelés, le contexte de la ressource doit être vérifié pour s'assurer qu'il s'agisse bien d'un fichier d'une ressource géré par ce listener.
+Le plugin FileStorageTransfer propose un listener pour surveiller les événements de transfert de fichiers.Ce listener est responsable de gérer pour chaque ressource de stockage le changement d'identifiant de la ressource source vers la ressource cible. Au transfert d'une ressource, l'ensemble des listeners sont appelés, le contexte de la ressource doit être vérifié pour s'assurer qu'il s'agisse bien d'un fichier d'une ressource géré par ce listener.
  **Classe principale:**  `IFileTransferListener` - Interface à implémenter pour créer un listener de transfert de fichiers. **Méthodes principales:** 
  
 * changeFileService( FileTransferRequest fileTransferRequest ) - Méthode appelée lors du changement d'identifiant de fichier

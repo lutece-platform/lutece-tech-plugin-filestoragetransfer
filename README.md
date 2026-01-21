@@ -1,4 +1,4 @@
-![](https://dev.lutece.paris.fr/jenkins/buildStatus/icon?job=plugin-filestoragetransfer-deploy)
+![](https://dev.lutece.paris.fr/jenkins/buildStatus/icon?job=tech-plugin-filestoragetransfer-deploy)
 [![Alerte](https://dev.lutece.paris.fr/sonar/api/project_badges/measure?project=fr.paris.lutece.plugins%3Aplugin-filestoragetransfer&metric=alert_status)](https://dev.lutece.paris.fr/sonar/dashboard?id=fr.paris.lutece.plugins%3Aplugin-filestoragetransfer)
 [![Line of code](https://dev.lutece.paris.fr/sonar/api/project_badges/measure?project=fr.paris.lutece.plugins%3Aplugin-filestoragetransfer&metric=ncloc)](https://dev.lutece.paris.fr/sonar/dashboard?id=fr.paris.lutece.plugins%3Aplugin-filestoragetransfer)
 [![Coverage](https://dev.lutece.paris.fr/sonar/api/project_badges/measure?project=fr.paris.lutece.plugins%3Aplugin-filestoragetransfer&metric=coverage)](https://dev.lutece.paris.fr/sonar/dashboard?id=fr.paris.lutece.plugins%3Aplugin-filestoragetransfer)
@@ -32,6 +32,14 @@ The FileStorageTransfer plugin uses the following properties for its configurati
 | filestoragetransfer.MailRecipient| Recipient of the file transfer error email| String| webmaster@localhost|
 
 
+The plugin defines the following administrative rights, identified in SQL scripts:
+
+| Right ID| Name| Description| Level|
+|-----------------|-----------------|-----------------|-----------------|
+| FILESTORAGETRANSFER_REQUEST_MANAGEMENT| Storage transfer request management| Allows managing transfer operations between storage systems| 2|
+| FILESTORAGETRANSFER_REQUEST_CREATION| Storage transfer management| Allows managing transfer operations between storage systems| 2|
+| FILESTORAGETRANSFER_ERROR_MANAGEMENT| Storage transfer management| Allows managing transfer operations between storage systems| 2|
+
 ## Usage
 
 The FileStorageTransfer plugin includes several services useful for its operation
@@ -61,18 +69,6 @@ Service that manages the different storage providers available for transfers.
  **Main Methods:** 
 
  `notifyFileTransferListeners()` - Notifies all listeners of a file transfer
-
-## Administrative Rights
-
-The plugin defines the following administrative rights, identified in SQL scripts:
-
-| Right ID| Name| Description| Level|
-|-----------------|-----------------|-----------------|-----------------|
-| FILESTORAGETRANSFER_REQUEST_MANAGEMENT| Storage transfer request management| Allows managing transfer operations between storage systems| 2|
-| FILESTORAGETRANSFER_REQUEST_CREATION| Storage transfer management| Allows managing transfer operations between storage systems| 2|
-| FILESTORAGETRANSFER_ERROR_MANAGEMENT| Storage transfer management| Allows managing transfer operations between storage systems| 2|
-
-## Listener
 
 The FileStorageTransfer plugin offers a listener to monitor file transfer events. This listener is responsible for managing, for each storage resource, the change of identifier from the source resource to the target resource. **Main Class:** 
  
