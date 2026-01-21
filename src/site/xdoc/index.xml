@@ -80,6 +80,33 @@
                         </tr>
                     </table>
                 </p>
+                <p>The plugin defines the following administrative rights, identified in SQL scripts:</p>
+                <table>
+                    <tr>
+                        <th>Right ID</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Level</th>
+                    </tr>
+                    <tr>
+                        <td>FILESTORAGETRANSFER_REQUEST_MANAGEMENT</td>
+                        <td>Storage transfer request management</td>
+                        <td>Allows managing transfer operations between storage systems</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>FILESTORAGETRANSFER_REQUEST_CREATION</td>
+                        <td>Storage transfer management</td>
+                        <td>Allows managing transfer operations between storage systems</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>FILESTORAGETRANSFER_ERROR_MANAGEMENT</td>
+                        <td>Storage transfer management</td>
+                        <td>Allows managing transfer operations between storage systems</td>
+                        <td>2</td>
+                    </tr>
+                </table>
             </subsection>
             <subsection name="Usage">
                 <p>The FileStorageTransfer plugin includes several services useful for its operation</p>
@@ -116,37 +143,6 @@
                 <p>
                     <code>notifyFileTransferListeners()</code> - Notifies all listeners of a file transfer
                 </p>
-            </subsection>
-            <subsection name="Administrative Rights">
-                <p>The plugin defines the following administrative rights, identified in SQL scripts:</p>
-                <table>
-                    <tr>
-                        <th>Right ID</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Level</th>
-                    </tr>
-                    <tr>
-                        <td>FILESTORAGETRANSFER_REQUEST_MANAGEMENT</td>
-                        <td>Storage transfer request management</td>
-                        <td>Allows managing transfer operations between storage systems</td>
-                        <td>2</td>
-                    </tr>
-                    <tr>
-                        <td>FILESTORAGETRANSFER_REQUEST_CREATION</td>
-                        <td>Storage transfer management</td>
-                        <td>Allows managing transfer operations between storage systems</td>
-                        <td>2</td>
-                    </tr>
-                    <tr>
-                        <td>FILESTORAGETRANSFER_ERROR_MANAGEMENT</td>
-                        <td>Storage transfer management</td>
-                        <td>Allows managing transfer operations between storage systems</td>
-                        <td>2</td>
-                    </tr>
-                </table>
-            </subsection>
-            <subsection name="Listener">
                 <p>
                     The FileStorageTransfer plugin offers a listener to monitor file transfer events.
                     This listener is responsible for managing, for each storage resource, the change of identifier from the source resource to the target resource.

@@ -80,6 +80,33 @@
                         </tr>
                     </table>
                 </p>
+                <p>Le plugin définit les droits administratifs suivants, identifiés dans les scripts SQL:</p>
+                <table>
+                    <tr>
+                        <th>ID du droit</th>
+                        <th>Nom</th>
+                        <th>Description</th>
+                        <th>Niveau</th>
+                    </tr>
+                    <tr>
+                        <td>FILESTORAGETRANSFER_REQUEST_MANAGEMENT</td>
+                        <td>Gestion des requêtes de transferts de stockage</td>
+                        <td>Permet de gérer les opérations de transfert entre systèmes de stockage</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>FILESTORAGETRANSFER_REQUEST_CREATION</td>
+                        <td>Gestion des transferts de stockage</td>
+                        <td>Permet de gérer les opérations de transfert entre systèmes de stockage</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>FILESTORAGETRANSFER_ERROR_MANAGEMENT</td>
+                        <td>Gestion des transferts de stockage</td>
+                        <td>Permet de gérer les opérations de transfert entre systèmes de stockage</td>
+                        <td>2</td>
+                    </tr>
+                </table> 
             </subsection>
             <subsection name="Usage">
                 <p>Le plugin FileStorageTransfer comprends plusieurs services utiles à son utilisation</p>
@@ -117,37 +144,6 @@
                     <code>notifyFileTransferListeners()</code> - Notifie l'ensemble des listeners du transfert d'un fichier
                 </p>
                 <br />
-            </subsection>
-            <subsection name="Droits administratifs">
-                <p>Le plugin définit les droits administratifs suivants, identifiés dans les scripts SQL:</p>
-                <table>
-                    <tr>
-                        <th>ID du droit</th>
-                        <th>Nom</th>
-                        <th>Description</th>
-                        <th>Niveau</th>
-                    </tr>
-                    <tr>
-                        <td>FILESTORAGETRANSFER_REQUEST_MANAGEMENT</td>
-                        <td>Gestion des requêtes de transferts de stockage</td>
-                        <td>Permet de gérer les opérations de transfert entre systèmes de stockage</td>
-                        <td>2</td>
-                    </tr>
-                    <tr>
-                        <td>FILESTORAGETRANSFER_REQUEST_CREATION</td>
-                        <td>Gestion des transferts de stockage</td>
-                        <td>Permet de gérer les opérations de transfert entre systèmes de stockage</td>
-                        <td>2</td>
-                    </tr>
-                    <tr>
-                        <td>FILESTORAGETRANSFER_ERROR_MANAGEMENT</td>
-                        <td>Gestion des transferts de stockage</td>
-                        <td>Permet de gérer les opérations de transfert entre systèmes de stockage</td>
-                        <td>2</td>
-                    </tr>
-                </table> 
-            </subsection>
-            <subsection name="Listener">
                 <p>
                     Le plugin FileStorageTransfer propose un listener pour surveiller les événements de transfert de fichiers. 
                     Ce listener est responsable de gérer pour chaque ressource de stockage le changement d'identifiant de la ressource source vers la ressource cible.
