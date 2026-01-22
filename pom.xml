@@ -11,7 +11,7 @@
     <artifactId>plugin-filestoragetransfer</artifactId>
     <packaging>lutece-plugin</packaging>
     
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>Lutece File Storage Transfer plugin</name>
 
     <repositories>
@@ -53,6 +53,6 @@
        <connection>scm:git:https://github.com/lutece-platform/lutece-tech-plugin-filestoragetransfer.git</connection>
         <developerConnection>scm:git:https://github.com/lutece-platform/lutece-tech-plugin-filestoragetransfer.git</developerConnection>
         <url>https://github.com/lutece-platform/lutece-tech-plugin-filestoragetransfer.git</url>
-        <tag>plugin-filestoragetransfer-1.0.1</tag>
+        <tag>HEAD</tag>
     </scm>
 </project>
